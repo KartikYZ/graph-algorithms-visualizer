@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 
 import Toolbar from './components/toolbar';
-import Canvas from './components/canvas';
+import Grid from './components/grid';
 
 interface Props {
 
@@ -39,7 +39,7 @@ class App extends React.Component<Props, State> {
             onSliderChange: this.onGridSizeChange
           }}
         />
-        <Canvas 
+        <Grid 
           gridSize={this.gridSizeValues[this.state.sliderValue]} 
           nodeRadius={5 - this.state.sliderValue}
         />
