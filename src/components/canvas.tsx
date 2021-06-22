@@ -115,6 +115,10 @@ class Canvas extends React.Component<Props, State> {
         }
     }
 
+    handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+        
+    }
+
     render() {
         return (
             <div className="canvas-container">
@@ -122,6 +126,7 @@ class Canvas extends React.Component<Props, State> {
                     id="canvas" 
                     ref={this.canvasRef} 
                     onMouseMove={(event) => this.handleMouseMove(event)}
+                    onClick={(event) => this.handleClick(event)}
                 />
             </div>
         );
@@ -219,7 +224,7 @@ class Canvas extends React.Component<Props, State> {
         let nearestVertex: [number, number] = this.nearestVertexInPixels(cursor);
         this.gridState.nearestVertexInPixels = nearestVertex;
         if (nearestVertex[0] > 0 && nearestVertex[0] < Canvas.WIDTH && nearestVertex[1] > 0 && nearestVertex[1] < Canvas.HEIGHT) {
-            return this.euclideanDist(cursor, nearestVertex) < Canvas.HOVER_RADIUS;
+            return this.euclideanDist(cursor, nearestVertex) < Canvas.HOVER_RADIUS; // and with conditional to assign isHovering directly here.
         }
         return false;
     }
