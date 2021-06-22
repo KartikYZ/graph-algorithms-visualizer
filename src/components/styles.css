@@ -1,0 +1,7 @@
+.canvas-container {
+    text-align: center;
+}
+
+canvas {
+    border: 1px solid rgba(190, 190, 190, 1);
+}

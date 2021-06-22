@@ -1,26 +1,46 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import Toolbar from './components/toolbar';
+import Canvas from './components/canvas';
+
+interface Props {
+
+}
+
+interface State {
+  sliderValue: number
+}
+
+class App extends React.Component<Props, State> {
+
+  // private gridSizeValues: number[] = [100, 80, 40, 32, 25, 20, 16];
+  private gridSizeValues: number[] = [100, 80, 40];
+
+  constructor(props: Props) {
+    super(props);
+
+    this.onGridSizeChange = this.onGridSizeChange.bind(this);
+    this.state = {
+      sliderValue: 0
+    }
+  }
+
+  onGridSizeChange(sliderValue: number) {
+    this.setState({sliderValue: sliderValue});
+  }
+
+  render() {
+    return (<React.Fragment>
+      <Toolbar 
+        sliderProps={{
+          sliderValue: this.state.sliderValue, 
+          onSliderChange: this.onGridSizeChange
+        }}
+      />
+      <Canvas gridSize={this.gridSizeValues[this.state.sliderValue]} nodeRadius={5 - this.state.sliderValue}/>
+    </React.Fragment>);
+  }
 }
 
 export default App;
