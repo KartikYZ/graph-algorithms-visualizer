@@ -31,15 +31,20 @@ class App extends React.Component<Props, State> {
   }
 
   render() {
-    return (<React.Fragment>
-      <Toolbar 
-        sliderProps={{
-          sliderValue: this.state.sliderValue, 
-          onSliderChange: this.onGridSizeChange
-        }}
-      />
-      <Canvas gridSize={this.gridSizeValues[this.state.sliderValue]} nodeRadius={5 - this.state.sliderValue}/>
-    </React.Fragment>);
+    return (
+      <React.Fragment>
+        <Toolbar 
+          sliderProps={{
+            sliderValue: this.state.sliderValue, 
+            onSliderChange: this.onGridSizeChange
+          }}
+        />
+        <Canvas 
+          gridSize={this.gridSizeValues[this.state.sliderValue]} 
+          nodeRadius={5 - this.state.sliderValue}
+        />
+      </React.Fragment>
+    );
   }
 }
 

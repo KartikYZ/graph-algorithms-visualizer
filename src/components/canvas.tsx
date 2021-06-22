@@ -10,7 +10,13 @@ interface Props {
 }
 
 interface State {
-    
+    hoverVertexInPixels: number[] | null;
+}
+
+interface GridState {
+    cursor: [number, number],
+    nearestVertexInPixels: [number, number],
+    isHoveringOverVertex: boolean
 }
 
 class Canvas extends React.Component<Props, State> {
@@ -22,8 +28,10 @@ class Canvas extends React.Component<Props, State> {
     private canvasRef: React.RefObject<HTMLCanvasElement>;
     private canvas: HTMLCanvasElement | null;
     
+    private gridState: GridState;
     private static WIDTH: number = 1600;
     private static HEIGHT: number = 800;
+    private static HOVER_RADIUS: number = 10;
 
     private static COLORS = {
         grid_color: `rgba(${grid_shade}, ${grid_shade}, ${grid_shade})`,
@@ -40,6 +48,16 @@ class Canvas extends React.Component<Props, State> {
 
         this.canvasRef = React.createRef<HTMLCanvasElement>();
         this.canvas = null;
+
+        this.state = {
+            hoverVertexInPixels: null
+        }
+
+        this.gridState = {
+            cursor: [-1, -1],
+            nearestVertexInPixels: [-1, -1],
+            isHoveringOverVertex: false
+        }
     }
 
     // lifecycle methods
@@ -81,7 +99,20 @@ class Canvas extends React.Component<Props, State> {
 
     // event listeners
     handleMouseMove(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-        // console.log(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+        
+        this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
+        
+        if (this.inVertexRadius(this.gridState.cursor)) {
+            if (!this.gridState.isHoveringOverVertex) {
+                this.gridState.isHoveringOverVertex = true;
+                this.drawCircle(...this.gridState.nearestVertexInPixels, Canvas.HOVER_RADIUS, Canvas.COLORS.node_hover_color, true);
+            }
+        } else {
+            if (this.gridState.isHoveringOverVertex) {
+                this.gridState.isHoveringOverVertex = false;
+            }
+            this.drawGrid();
+        }
     }
 
     render() {
@@ -98,20 +129,18 @@ class Canvas extends React.Component<Props, State> {
 
     // drawing handlers
     drawGrid() {
+
+        const { gridSize, nodeRadius } = this.props;
         
         this.context.clearRect(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
-        
         this.context.strokeStyle = Canvas.COLORS.grid_color;
         this.context.fillStyle = Canvas.COLORS.inactive_node_color;
         
-        const NODE_RADIUS = this.props.nodeRadius;
-        const GRID_SIZE = this.props.gridSize;
-        
-        for (let i = 1; i < Canvas.WIDTH / GRID_SIZE; i++) {   
-            for (let j = 1; j < Canvas.HEIGHT / GRID_SIZE; j++) {
+        for (let i = 1; i < Canvas.WIDTH / gridSize; i++) {   
+            for (let j = 1; j < Canvas.HEIGHT / gridSize; j++) {
                 
-                let xpos = i * GRID_SIZE;
-                let ypos = j * GRID_SIZE;
+                let xpos = i * gridSize;
+                let ypos = j * gridSize;
                 
                 this.context.beginPath();
                 this.context.moveTo(0, ypos);
@@ -124,16 +153,81 @@ class Canvas extends React.Component<Props, State> {
                 this.context.stroke();
     
                 this.context.beginPath();
-                this.context.arc(i * GRID_SIZE, j * GRID_SIZE, NODE_RADIUS, 0, 2 * Math.PI);
+                this.context.arc(i * gridSize, j * gridSize, nodeRadius, 0, 2 * Math.PI);
                 this.context.fill();
                 
             }
         }
     }
 
-    
+    drawCircle(x: number, y: number, r: number, color: string, fill = true) {
+        // console.log(x, y, r, color, fill, context);
+
+        this.context.save();
+        this.context.beginPath();
+        this.context.arc(x, y, r, 0, 2 * Math.PI, true);
+        
+        if (fill) {
+            this.context.fillStyle = color;
+            this.context.fill();
+        } else {
+            this.context.strokeStyle = color;
+            this.context.stroke();
+        }
+        this.context.restore();
+    }
+
+    // utility methods
+
+    /**
+     * 
+     * @param cursor size 2 array where cursor[0] = cursorX, cursor[1] = cursorY; pixel position on canvas element.
+     * @returns pixel position of nearest vertex relative to cursor position on grid as size 2 array.
+     */
+    nearestVertexInPixels(cursor: [number, number]): [number, number] {
+        
+        const { gridSize } = this.props;
+        let nearest: number[] = cursor.map((val) => Math.round(val / gridSize) * gridSize)
+        let nearestPixelNode: [number, number] = [nearest[0], nearest[1]];
+        
+        switch (nearestPixelNode[0]) {
+            case 0:
+                nearestPixelNode[0] += gridSize;
+                break;
+            case Canvas.WIDTH:
+                nearestPixelNode[0] -= gridSize;
+                break;
+            default:
+                break;
+        }
+
+        switch (nearestPixelNode[1]) {
+            case 0:
+                nearestPixelNode[1] += gridSize;
+                break;
+            case Canvas.HEIGHT:
+                nearestPixelNode[1] -= gridSize;
+                break;
+            default:
+                break;
+        }
+
+        return nearestPixelNode;
+    }
+
+    inVertexRadius(cursor: [number, number]): boolean {
+        let nearestVertex: [number, number] = this.nearestVertexInPixels(cursor);
+        this.gridState.nearestVertexInPixels = nearestVertex;
+        if (nearestVertex[0] > 0 && nearestVertex[0] < Canvas.WIDTH && nearestVertex[1] > 0 && nearestVertex[1] < Canvas.HEIGHT) {
+            return this.euclideanDist(cursor, nearestVertex) < Canvas.HOVER_RADIUS;
+        }
+        return false;
+    }
+
+    euclideanDist(p1: number[], p2: number[]) {
+        return Math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2);
+    }
+
 }
-
-
 
 export default Canvas;
