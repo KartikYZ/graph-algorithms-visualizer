@@ -1,6 +1,9 @@
 import React from 'react';
 import './styles.css';
 
+import Vertex from '../graph/vertex';
+import Edge from '../graph/edge';
+
 const grid_shade = 190;
 const hover_shade = 190;
 
@@ -133,7 +136,7 @@ class Canvas extends React.Component<Props, State> {
     }
 
     // drawing handlers
-    drawGrid() {
+    drawGrid(): void {
 
         const { gridSize, nodeRadius } = this.props;
         
@@ -165,7 +168,7 @@ class Canvas extends React.Component<Props, State> {
         }
     }
 
-    drawCircle(x: number, y: number, r: number, color: string, fill = true) {
+    drawCircle(x: number, y: number, r: number, color: string, fill = true): void {
         // console.log(x, y, r, color, fill, context);
 
         this.context.save();
@@ -180,6 +183,35 @@ class Canvas extends React.Component<Props, State> {
             this.context.stroke();
         }
         this.context.restore();
+    }
+
+    drawVertex(v: Vertex<any>): void {
+        this.drawCircle(
+            v.getPosition()[0] * this.props.gridSize,
+            v.getPosition()[1] * this.props.gridSize,
+            this.props.nodeRadius,
+            Canvas.COLORS.active_node_color,
+            true
+        );
+    }
+
+    drawUndirectedEdge(e: Edge<any>): void {
+        let start = e.start.getPosition();
+        let end = e.start.getPosition();
+        const { gridSize } = this.props;
+
+        this.context.save();
+        this.context.strokeStyle = Canvas.COLORS.default_edge_color;
+        this.context.lineWidth = this.props.nodeRadius - 3;
+        this.context.beginPath();
+        this.context.moveTo(start[0] * gridSize, start[1] * gridSize);
+        this.context.lineTo(end[0] * gridSize, end[1] * gridSize);
+        this.context.stroke();
+        this.context.restore();
+    }
+
+    drawDirectedEdge(e: Edge<any>): void {
+
     }
 
     // utility methods
@@ -224,7 +256,7 @@ class Canvas extends React.Component<Props, State> {
         let nearestVertex: [number, number] = this.nearestVertexInPixels(cursor);
         this.gridState.nearestVertexInPixels = nearestVertex;
         if (nearestVertex[0] > 0 && nearestVertex[0] < Canvas.WIDTH && nearestVertex[1] > 0 && nearestVertex[1] < Canvas.HEIGHT) {
-            return this.euclideanDist(cursor, nearestVertex) < Canvas.HOVER_RADIUS; // and with conditional to assign isHovering directly here.
+            return this.euclideanDist(cursor, nearestVertex) < Canvas.HOVER_RADIUS; // and with conditional to assign isHovering directly here. This will cause redundant renders.
         }
         return false;
     }
@@ -236,3 +268,10 @@ class Canvas extends React.Component<Props, State> {
 }
 
 export default Canvas;
+
+// Notes:
+/* 
+Abstract canvas array, separate logic and drawing between two components.
+Use setState to trigger rerenders.
+
+*/
