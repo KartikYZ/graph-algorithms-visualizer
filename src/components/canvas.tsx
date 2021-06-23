@@ -28,6 +28,7 @@ class Canvas extends React.Component<Props, State> {
 
     private canvasRef: React.RefObject<HTMLCanvasElement>;
     private canvas: HTMLCanvasElement | null;
+    private constCanvasElement: any;
     
     
     public static WIDTH: number = 1600;
@@ -55,6 +56,13 @@ class Canvas extends React.Component<Props, State> {
             hoverVertexInPixels: null
         }
 
+        // Dan Abramov on StackOverflow: a constant element tells React to never rerender.
+        this.constCanvasElement = <canvas
+            id="canvas" 
+            ref={this.canvasRef} 
+            onClick={this.props.onClick}
+            onMouseMove={this.props.onMouseMove}
+        />
         
     }
 
@@ -123,12 +131,7 @@ class Canvas extends React.Component<Props, State> {
     render() {
         return (
             <div className="canvas-container">
-                <canvas 
-                    id="canvas" 
-                    ref={this.canvasRef} 
-                    onClick={this.props.onClick}
-                    onMouseMove={this.props.onMouseMove}
-                />
+                {this.constCanvasElement}
             </div>
         );
     }
@@ -223,5 +226,6 @@ export default Canvas;
 /* 
 Abstract canvas array, separate logic and drawing between two components.
 Use setState to trigger rerenders.
+Prevent the canvas element itself from rerendering. > done.
 
 */
