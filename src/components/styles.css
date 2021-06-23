@@ -6,6 +6,10 @@ canvas {
     border: 1px solid rgba(190, 190, 190, 1);
 }
 
+#slider {
+    margin-top: 25px;
+}
+
 #slider::-webkit-slider-thumb {
     -webkit-appearance: none; /* Override default look */
     appearance: none;   

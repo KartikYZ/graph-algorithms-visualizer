@@ -2,7 +2,7 @@ import React from 'react';
 import './styles.css';
 
 import Vertex from '../graph/vertex';
-// import Edge from '../graph/edge';
+import Edge from '../graph/edge';
 
 const grid_shade = 190;
 const hover_shade = 190;
@@ -11,6 +11,7 @@ interface Props {
     gridSize: number,
     nodeRadius: number,
     hoveringVertex: Vertex<any> | null,
+    currentVertex: Vertex<any> | null,
     onClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
     onMouseMove: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void
 }
@@ -93,7 +94,7 @@ class Canvas extends React.Component<Props, State> {
             this.drawGrid();
             
             if (this.props.hoveringVertex) {
-                
+                // use drawVertex for these
                 this.drawCircle(
                     this.props.hoveringVertex.getPosition()[0] * this.props.gridSize,
                     this.props.hoveringVertex.getPosition()[1] * this.props.gridSize, 
@@ -101,30 +102,19 @@ class Canvas extends React.Component<Props, State> {
                     Canvas.COLORS.node_hover_color, 
                     true);
             }
+
+            if (this.props.currentVertex) {
+                // use drawVertex for these
+                this.drawCircle(
+                    this.props.currentVertex.getPosition()[0] * this.props.gridSize,
+                    this.props.currentVertex.getPosition()[1] * this.props.gridSize, 
+                    Canvas.HOVER_RADIUS, 
+                    Canvas.COLORS.node_hover_color, 
+                    true
+                );
+            }
         }
     }
-
-    // event listeners
-    // handleMouseMove(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-        
-    //     this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
-        
-    //     if (this.inVertexRadius(this.gridState.cursor)) {
-    //         if (!this.gridState.isHoveringOverVertex) {
-    //             this.gridState.isHoveringOverVertex = true;
-    //             this.drawCircle(...this.gridState.nearestVertexInPixels, Canvas.HOVER_RADIUS, Canvas.COLORS.node_hover_color, true);
-    //         }
-    //     } else {
-    //         if (this.gridState.isHoveringOverVertex) {
-    //             this.gridState.isHoveringOverVertex = false;
-    //         }
-    //         this.drawGrid();
-    //     }
-    // }
-
-    // handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-        
-    // }
 
     render() {
         return (
@@ -193,34 +183,34 @@ class Canvas extends React.Component<Props, State> {
         this.context.restore();
     }
 
-    // drawVertex(v: Vertex<any>): void {
-    //     this.drawCircle(
-    //         v.getPosition()[0] * this.props.gridSize,
-    //         v.getPosition()[1] * this.props.gridSize,
-    //         this.props.nodeRadius,
-    //         Canvas.COLORS.active_node_color,
-    //         true
-    //     );
-    // }
+    drawVertex(v: Vertex<any>): void {
+        this.drawCircle(
+            v.getPosition()[0] * this.props.gridSize,
+            v.getPosition()[1] * this.props.gridSize,
+            this.props.nodeRadius,
+            Canvas.COLORS.active_node_color,
+            true
+        );
+    }
 
-    // drawUndirectedEdge(e: Edge<any>): void {
-    //     let start = e.start.getPosition();
-    //     let end = e.start.getPosition();
-    //     const { gridSize } = this.props;
+    drawUndirectedEdge(e: Edge<any>): void {
+        let start = e.start.getPosition();
+        let end = e.start.getPosition();
+        const { gridSize } = this.props;
 
-    //     this.context.save();
-    //     this.context.strokeStyle = Canvas.COLORS.default_edge_color;
-    //     this.context.lineWidth = this.props.nodeRadius - 3;
-    //     this.context.beginPath();
-    //     this.context.moveTo(start[0] * gridSize, start[1] * gridSize);
-    //     this.context.lineTo(end[0] * gridSize, end[1] * gridSize);
-    //     this.context.stroke();
-    //     this.context.restore();
-    // }
+        this.context.save();
+        this.context.strokeStyle = Canvas.COLORS.default_edge_color;
+        this.context.lineWidth = this.props.nodeRadius - 3;
+        this.context.beginPath();
+        this.context.moveTo(start[0] * gridSize, start[1] * gridSize);
+        this.context.lineTo(end[0] * gridSize, end[1] * gridSize);
+        this.context.stroke();
+        this.context.restore();
+    }
 
-    // drawDirectedEdge(e: Edge<any>): void {
+    drawDirectedEdge(e: Edge<any>): void {
 
-    // }
+    }
 }
 
 export default Canvas;

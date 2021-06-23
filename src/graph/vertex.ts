@@ -8,7 +8,7 @@ export default class Vertex<T> {
         this.data = data;
     }
 
-    equals(v: Object): boolean {
+    equals(v: Object | null): boolean {
         if (!(v instanceof Vertex) || v == null) {
             return false;
         } else if (this.position[0] === v.position[0] && this.position[1] === v.position[1]) {

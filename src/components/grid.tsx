@@ -9,7 +9,8 @@ interface Props {
 }
 
 interface State {
-    hoveringVertex: Vertex<any> | null
+    hoveringVertex: Vertex<any> | null,
+    currentVertex: Vertex<any> | null
 }
 
 interface GridState {
@@ -25,7 +26,8 @@ class Grid extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            hoveringVertex: null
+            hoveringVertex: null,
+            currentVertex: null
         }
 
         this.gridState = {
@@ -37,6 +39,18 @@ class Grid extends React.Component<Props, State> {
 
     handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
         console.log('clicked!');
+
+        if (this.state.hoveringVertex) {
+            if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
+                this.setState({
+                    currentVertex: null
+                });
+            } else {
+                this.setState({
+                    currentVertex: this.state.hoveringVertex
+                });
+            }
+        }
     }
 
     handleMouseMove(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
@@ -44,14 +58,7 @@ class Grid extends React.Component<Props, State> {
         this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
         
         if (this.inVertexRadius(this.gridState.cursor)) {
-            // if (!this.gridState.isHoveringOverVertex) {
-            //     this.gridState.isHoveringOverVertex = true;
-                
-            //     let vertex = this.PixelsToVertex(this.nearestVertexInPixels(this.gridState.cursor));
-            //     this.setState({
-            //         hoveringVertex: vertex
-            //     });
-            // }
+    
             if (!this.state.hoveringVertex) {
                 this.setState({
                     hoveringVertex: this.PixelsToVertex(this.nearestVertexInPixels(this.gridState.cursor))
@@ -59,12 +66,7 @@ class Grid extends React.Component<Props, State> {
             }
 
         } else {
-            // if (this.gridState.isHoveringOverVertex) {
-            //     this.gridState.isHoveringOverVertex = false;
-            //     this.setState({
-            //         hoveringVertex: null
-            //     })
-            // }
+            
             if (this.state.hoveringVertex) {
                 this.setState({
                     hoveringVertex: null
@@ -79,6 +81,7 @@ class Grid extends React.Component<Props, State> {
           gridSize={this.props.gridSize}    // alternative: {...this.props}
           nodeRadius={this.props.nodeRadius}
           hoveringVertex={this.state.hoveringVertex}
+          currentVertex={this.state.currentVertex}
           onClick={(event) => this.handleClick(event)}
           onMouseMove={(event) => this.handleMouseMove(event)}
         />);
