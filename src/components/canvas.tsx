@@ -38,7 +38,8 @@ class Canvas extends React.Component<Props, State> {
         grid_color: `rgba(${grid_shade}, ${grid_shade}, ${grid_shade})`,
         node_hover_color: `rgba(${hover_shade}, ${hover_shade}, ${hover_shade}, 0.5)`,
         active_node_color: 'rgba(50, 100, 168, 0.7)',
-        current_node_color: 'rgba(98, 217, 131, 0.5)',
+        // current_node_color: 'rgba(98, 217, 131, 0.5)',
+        current_node_color: 'rgba(255, 255, 255, 0.5)',
         inactive_node_color: `rgba(${hover_shade}, ${hover_shade}, ${hover_shade}, 0.7)`,
         edge_hover_color: 'rgba(50, 100, 168, 0.5)',
         default_edge_color: 'rgba(50, 100, 168, 1)',
@@ -109,9 +110,12 @@ class Canvas extends React.Component<Props, State> {
                     this.props.currentVertex.getPosition()[0] * this.props.gridSize,
                     this.props.currentVertex.getPosition()[1] * this.props.gridSize, 
                     Canvas.HOVER_RADIUS, 
-                    Canvas.COLORS.node_hover_color, 
+                    Canvas.COLORS.current_node_color, 
                     true
                 );
+                    
+                // how about an outline?
+
             }
         }
     }

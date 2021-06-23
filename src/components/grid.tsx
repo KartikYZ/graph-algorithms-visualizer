@@ -1,7 +1,10 @@
 import React from 'react';
 import Canvas from './canvas';
 
+
+import HashSet from '../utils/hashSet';
 import Vertex from '../graph/vertex';
+import Edge from '../graph/edge';
 
 interface Props {
     gridSize: number,
@@ -10,7 +13,9 @@ interface Props {
 
 interface State {
     hoveringVertex: Vertex<any> | null,
-    currentVertex: Vertex<any> | null
+    currentVertex: Vertex<any> | null,
+    VertexSet: HashSet<Vertex<any>> | null  // replace with Graph class? Will this ever be null?
+    EdgeSet: HashSet<Edge<any>> | null    // --^
 }
 
 interface GridState {
@@ -27,7 +32,9 @@ class Grid extends React.Component<Props, State> {
         super(props);
         this.state = {
             hoveringVertex: null,
-            currentVertex: null
+            currentVertex: null,
+            VertexSet: new HashSet<Vertex<any>>(),
+            EdgeSet: new HashSet<Edge<any>>()
         }
 
         this.gridState = {
