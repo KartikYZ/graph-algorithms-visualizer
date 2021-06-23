@@ -5,3 +5,11 @@
 canvas {
     border: 1px solid rgba(190, 190, 190, 1);
 }
+
+#slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;   
+    background:rgba(190, 190, 190, 1); /* todo */
+    cursor: pointer; /* Cursor on hover */
+}
+  

@@ -40,6 +40,7 @@ class Slider extends React.Component<Props, State> {
             'input', 
             {
                 type: 'range',
+                id: 'slider',
                 value: this.state.sliderValue,
                 max: this.sliderLength - 1,
                 onChange: (event) => this.handleOnChange(event),

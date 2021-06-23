@@ -10,6 +10,7 @@ const hover_shade = 190;
 interface Props {
     gridSize: number,
     nodeRadius: number,
+    hoveringVertex: Vertex<number>,
     onClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
     onMouseMove: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void
 }
@@ -99,6 +100,12 @@ class Canvas extends React.Component<Props, State> {
 
         if (this.context) {
             this.drawGrid();
+            this.drawCircle(
+                this.props.hoveringVertex.getPosition()[0] * this.props.gridSize,
+                this.props.hoveringVertex.getPosition()[1] * this.props.gridSize, 
+                Canvas.HOVER_RADIUS, 
+                Canvas.COLORS.node_hover_color, 
+                true);
         }
     }
 
@@ -142,7 +149,9 @@ class Canvas extends React.Component<Props, State> {
 
         const { gridSize, nodeRadius } = this.props;
         
-        this.context.clearRect(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
+        // this.context.clearRect(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
+        this.context.fillStyle = 'rgba(0, 0, 0, 1)';
+        this.context.fillRect(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
         this.context.strokeStyle = Canvas.COLORS.grid_color;
         this.context.fillStyle = Canvas.COLORS.inactive_node_color;
         
@@ -184,7 +193,7 @@ class Canvas extends React.Component<Props, State> {
             this.context.strokeStyle = color;
             this.context.stroke();
         }
-        
+
         this.context.restore();
     }
 
