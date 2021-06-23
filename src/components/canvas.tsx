@@ -10,6 +10,8 @@ const hover_shade = 190;
 interface Props {
     gridSize: number,
     nodeRadius: number,
+    onClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
+    onMouseMove: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void
 }
 
 interface State {
@@ -101,26 +103,26 @@ class Canvas extends React.Component<Props, State> {
     }
 
     // event listeners
-    handleMouseMove(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+    // handleMouseMove(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
         
-        this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
+    //     this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
         
-        if (this.inVertexRadius(this.gridState.cursor)) {
-            if (!this.gridState.isHoveringOverVertex) {
-                this.gridState.isHoveringOverVertex = true;
-                this.drawCircle(...this.gridState.nearestVertexInPixels, Canvas.HOVER_RADIUS, Canvas.COLORS.node_hover_color, true);
-            }
-        } else {
-            if (this.gridState.isHoveringOverVertex) {
-                this.gridState.isHoveringOverVertex = false;
-            }
-            this.drawGrid();
-        }
-    }
+    //     if (this.inVertexRadius(this.gridState.cursor)) {
+    //         if (!this.gridState.isHoveringOverVertex) {
+    //             this.gridState.isHoveringOverVertex = true;
+    //             this.drawCircle(...this.gridState.nearestVertexInPixels, Canvas.HOVER_RADIUS, Canvas.COLORS.node_hover_color, true);
+    //         }
+    //     } else {
+    //         if (this.gridState.isHoveringOverVertex) {
+    //             this.gridState.isHoveringOverVertex = false;
+    //         }
+    //         this.drawGrid();
+    //     }
+    // }
 
-    handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+    // handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
         
-    }
+    // }
 
     render() {
         return (
@@ -128,8 +130,8 @@ class Canvas extends React.Component<Props, State> {
                 <canvas 
                     id="canvas" 
                     ref={this.canvasRef} 
-                    onMouseMove={(event) => this.handleMouseMove(event)}
-                    onClick={(event) => this.handleClick(event)}
+                    onClick={this.props.onClick}
+                    onMouseMove={this.props.onMouseMove}
                 />
             </div>
         );
@@ -182,6 +184,7 @@ class Canvas extends React.Component<Props, State> {
             this.context.strokeStyle = color;
             this.context.stroke();
         }
+        
         this.context.restore();
     }
 
