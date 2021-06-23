@@ -33,12 +33,14 @@ class App extends React.Component<Props, State> {
   render() {
     return (
       <React.Fragment>
-        <Toolbar 
-          sliderProps={{
-            sliderValue: this.state.sliderValue, 
-            onSliderChange: this.onGridSizeChange
-          }}
-        />
+        <div style={{height: 80, textAlign: 'center'}}>
+          <Toolbar 
+            sliderProps={{
+              sliderValue: this.state.sliderValue, 
+              onSliderChange: this.onGridSizeChange
+            }}
+          />
+        </div>
         <Grid 
           gridSize={this.gridSizeValues[this.state.sliderValue]} 
           nodeRadius={5 - this.state.sliderValue}

@@ -26,8 +26,8 @@ class Slider extends React.Component<Props, State> {
     }
 
     componentDidUpdate() {
-        this.setState((state, props) => {
-            if (props.sliderValue !== state.sliderValue) {
+        this.setState((prevState, props) => {
+            if (props.sliderValue !== prevState.sliderValue) {
                 return {
                     sliderValue: props.sliderValue
                 }
