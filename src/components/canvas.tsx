@@ -293,6 +293,26 @@ class Canvas extends React.Component<Props, State> {
         this.context.fill();
 
         this.context.restore();
+        
+        this.context.save();
+        
+        this.context.translate(
+            0.5 * (v2[0] + v1[0]) * gridSize,
+            0.5 * (v2[1] + v1[1]) * gridSize
+        );
+            
+        this.context.strokeStyle = 'black';
+        this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        
+        // this.context.strokeRect(-10, -10, 20, 20);
+
+        this.context.fillRect(-15, -15, 30, 30);
+
+        this.context.font = '18px serif';
+        this.context.fillStyle = 'black';
+        this.context.fillText(e.getWeight().toString(), -10, 6);
+        this.context.restore();
+        
     }
 }
 
