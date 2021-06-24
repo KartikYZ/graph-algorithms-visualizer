@@ -12,6 +12,7 @@ interface Props {
     gridSize: number,
     nodeRadius: number,
     hoveringVertex: Vertex<any> | null,
+    hoveringEdge: Edge<any> | null,
     currentVertex: Vertex<any> | null,
     VertexSet: HashSet<Vertex<any>>,  // replace with Graph class?
     EdgeSet: HashSet<Edge<any>>,
@@ -108,7 +109,10 @@ class Canvas extends React.Component<Props, State> {
         if (this.context) {
             
             this.drawGrid();
+
+            // destructure props here.
             
+            // hover vertex
             if (this.props.hoveringVertex) {
                 // use drawVertex for these
                 this.drawCircle(
@@ -119,11 +123,13 @@ class Canvas extends React.Component<Props, State> {
                     true);
             }
 
+            // vertex set
             for (let vertex of this.props.VertexSet.getSet()) {
                 if (!vertex.equals(this.props.currentVertex))
                     this.drawVertex(vertex);
             }
 
+            // current active vertex
             if (this.props.currentVertex) {
                 // use drawVertex for these
                 this.drawCircle(
@@ -132,11 +138,20 @@ class Canvas extends React.Component<Props, State> {
                     Canvas.HOVER_RADIUS, 
                     Canvas.COLORS.current_node_color, 
                     true
-                );
-                    
+                );      
                 // how about an outline?
-
             }
+
+            if (this.props.hoveringEdge) {
+                this.drawUndirectedHoverEdge(this.props.hoveringEdge);
+            }
+
+            // hover edge
+
+            for (let edge of this.props.EdgeSet.getSet()) {
+                this.drawUndirectedEdge(edge);
+            }
+            // edge set
         }
     }
 
@@ -213,13 +228,31 @@ class Canvas extends React.Component<Props, State> {
     }
 
     drawUndirectedEdge(e: Edge<any>): void {
+
         let start = e.start.getPosition();
-        let end = e.start.getPosition();
-        const { gridSize } = this.props;
+        let end = e.end.getPosition();
+        const { gridSize, nodeRadius } = this.props;
 
         this.context.save();
-        this.context.strokeStyle = Canvas.COLORS.default_edge_color;
-        this.context.lineWidth = this.props.nodeRadius - 3;
+        // this.context.strokeStyle = Canvas.COLORS.active_node_color;
+        this.context.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        this.context.lineWidth = nodeRadius;
+        this.context.beginPath();
+        this.context.moveTo(start[0] * gridSize, start[1] * gridSize);
+        this.context.lineTo(end[0] * gridSize, end[1] * gridSize);
+        this.context.stroke();
+        this.context.restore();
+    }
+
+    drawUndirectedHoverEdge(e: Edge<any>): void {
+        let start = e.start.getPosition();
+        let end = e.end.getPosition();
+        const { gridSize, nodeRadius } = this.props;
+
+        this.context.save();
+        // this.context.strokeStyle = Canvas.COLORS.active_node_color;
+        this.context.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        this.context.lineWidth = nodeRadius;
         this.context.beginPath();
         this.context.moveTo(start[0] * gridSize, start[1] * gridSize);
         this.context.lineTo(end[0] * gridSize, end[1] * gridSize);
@@ -239,5 +272,6 @@ export default Canvas;
 Abstract canvas array, separate logic and drawing between two components.
 Use setState to trigger rerenders.
 Prevent the canvas element itself from rerendering. > done.
+Using offsetX and offsetY breaks when zooming in with trackpad. (Standard browser zooming works)
 
 */

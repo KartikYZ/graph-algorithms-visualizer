@@ -14,7 +14,8 @@ interface Props {
 interface State {
     hoveringVertex: Vertex<any> | null,
     currentVertex: Vertex<any> | null,
-    VertexSet: HashSet<Vertex<any>>  // replace with Graph class? Will this ever be null?
+    hoveringEdge: Edge<any> | null,
+    VertexSet: HashSet<Vertex<any>>  // replace with Graph class?
     EdgeSet: HashSet<Edge<any>>    // --^
 }
 
@@ -33,6 +34,7 @@ class Grid extends React.Component<Props, State> {
         this.state = {
             hoveringVertex: null,
             currentVertex: null,
+            hoveringEdge: null,
             VertexSet: new HashSet<Vertex<any>>(),
             EdgeSet: new HashSet<Edge<any>>()
         }
@@ -49,11 +51,13 @@ class Grid extends React.Component<Props, State> {
         if (this.state.hoveringVertex) {
             if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
                 this.setState({
-                    currentVertex: null
+                    currentVertex: null,
+                    hoveringEdge: null
                 });
             } else {
                 this.setState({
-                    currentVertex: this.state.hoveringVertex
+                    currentVertex: this.state.hoveringVertex,
+                    hoveringEdge: null
                 });
             }
 
@@ -70,15 +74,19 @@ class Grid extends React.Component<Props, State> {
 
         if (this.state.hoveringVertex) {
 
-            if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
-                this.setState({
-                    currentVertex: null
-                });
-            }
+            // if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
+            //     this.setState({
+            //         currentVertex: null
+            //     });
+            // }
 
             if (this.state.VertexSet.contains(this.state.hoveringVertex)) {
                 this.state.VertexSet.remove(this.state.hoveringVertex);
                 this.setState({});
+                this.setState({
+                    currentVertex: null,
+                    hoveringEdge: null
+                });
             }
 
             
@@ -87,13 +95,26 @@ class Grid extends React.Component<Props, State> {
 
     handleMouseMove(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
         // console.log(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+        let prevNearestVertexInPixels = this.gridState.nearestVertexInPixels;   // keek track of Vertex object instead of tuple.
         this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
+
+        if (this.nearestVertexInPixels(this.gridState.cursor)[0] !== prevNearestVertexInPixels[0] || 
+            this.nearestVertexInPixels(this.gridState.cursor)[1] !== prevNearestVertexInPixels[1]) {
+                this.gridState.nearestVertexInPixels = this.nearestVertexInPixels(this.gridState.cursor);
+
+                if (this.state.currentVertex) {
+                    let hoveringEdge = new Edge(this.state.currentVertex, this.PixelsToVertex(this.gridState.nearestVertexInPixels), 0);
+                    this.setState({
+                        hoveringEdge: hoveringEdge
+                    });
+                }
+            }
         
         if (this.inVertexRadius(this.gridState.cursor)) {
     
             if (!this.state.hoveringVertex) {
                 this.setState({
-                    hoveringVertex: this.PixelsToVertex(this.nearestVertexInPixels(this.gridState.cursor))
+                    hoveringVertex: this.PixelsToVertex(this.gridState.nearestVertexInPixels)
                 });
             }
 
@@ -113,6 +134,7 @@ class Grid extends React.Component<Props, State> {
           gridSize={this.props.gridSize}    // alternative: {...this.props}
           nodeRadius={this.props.nodeRadius}
           hoveringVertex={this.state.hoveringVertex}
+          hoveringEdge={this.state.hoveringEdge}
           currentVertex={this.state.currentVertex}
           VertexSet={this.state.VertexSet}
           EdgeSet={this.state.EdgeSet}
@@ -167,7 +189,7 @@ class Grid extends React.Component<Props, State> {
 
     inVertexRadius(cursor: [number, number]): boolean {
         let nearestVertex: [number, number] = this.nearestVertexInPixels(cursor);
-        this.gridState.nearestVertexInPixels = nearestVertex;
+        // this.gridState.nearestVertexInPixels = nearestVertex;
         if (nearestVertex[0] > 0 && nearestVertex[0] < Canvas.WIDTH && nearestVertex[1] > 0 && nearestVertex[1] < Canvas.HEIGHT) {
             return this.euclideanDist(cursor, nearestVertex) < Canvas.HOVER_RADIUS; // and with conditional to assign isHovering directly here. This will cause redundant renders.
         }
