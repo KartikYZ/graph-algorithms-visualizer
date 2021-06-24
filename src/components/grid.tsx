@@ -46,6 +46,9 @@ class Grid extends React.Component<Props, State> {
         }
     }   
 
+    // TODO: Removing vertex does not remove incident vertices. Graph class required for this!
+    // TODO2: Undirected vs Directed Edges!
+
     handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
 
         if (this.state.hoveringVertex) {
@@ -55,7 +58,15 @@ class Grid extends React.Component<Props, State> {
                     hoveringEdge: null
                 });
             } else {
-                this.setState({
+                if (this.state.hoveringEdge) {
+                    if (!this.state.EdgeSet.contains(this.state.hoveringEdge)) {
+                        this.state.EdgeSet.add(this.state.hoveringEdge);
+                    } else {
+                        this.state.EdgeSet.remove(this.state.hoveringEdge);
+                    }
+                }
+
+                this.setState({     // use second form of setState here to save edges? UPD: Not required.
                     currentVertex: this.state.hoveringVertex,
                     hoveringEdge: null
                 });
@@ -82,7 +93,7 @@ class Grid extends React.Component<Props, State> {
 
             if (this.state.VertexSet.contains(this.state.hoveringVertex)) {
                 this.state.VertexSet.remove(this.state.hoveringVertex);
-                this.setState({});
+                // this.setState({});
                 this.setState({
                     currentVertex: null,
                     hoveringEdge: null

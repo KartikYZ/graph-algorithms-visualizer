@@ -33,7 +33,7 @@ class App extends React.Component<Props, State> {
   render() {
     return (
       <React.Fragment>
-        <div style={{height: 80, textAlign: 'center'}}>
+        <div style={{height: 80, textAlign: 'center'}}> {/* encapsulate within toolbar */}
           <Toolbar 
             sliderProps={{
               sliderValue: this.state.sliderValue, 
