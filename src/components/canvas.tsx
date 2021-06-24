@@ -143,13 +143,15 @@ class Canvas extends React.Component<Props, State> {
             }
 
             if (this.props.hoveringEdge) {
-                this.drawUndirectedHoverEdge(this.props.hoveringEdge);
+                // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
+                this.drawDirectedEdge(this.props.hoveringEdge);
             }
 
             // hover edge
 
             for (let edge of this.props.EdgeSet.getSet()) {
-                this.drawUndirectedEdge(edge);
+                // this.drawUndirectedEdge(edge);
+                this.drawDirectedEdge(edge);
             }
             // edge set
         }
@@ -244,7 +246,7 @@ class Canvas extends React.Component<Props, State> {
         this.context.restore();
     }
 
-    drawUndirectedHoverEdge(e: Edge<any>): void {
+    drawUndirectedHoverEdge(e: Edge<any>): void {   // use drawUndirectedEdge with specific color. This is embarassing.
         let start = e.start.getPosition();
         let end = e.end.getPosition();
         const { gridSize, nodeRadius } = this.props;
@@ -261,7 +263,36 @@ class Canvas extends React.Component<Props, State> {
     }
 
     drawDirectedEdge(e: Edge<any>): void {
+        this.drawUndirectedEdge(e);
 
+        let v1 = e.start.getPosition();
+        let v2 = e.end.getPosition();
+
+        let angle = Math.atan2(v2[1] - v1[1], v2[0] - v1[0]);
+        
+        let { gridSize } = this.props;
+        let mag = 10;
+
+        this.context.save();
+        this.context.strokeStyle = this.context.fillStyle = Canvas.COLORS.current_node_color;
+
+        this.context.translate(
+            v2[0] * gridSize - this.props.nodeRadius * Math.cos(angle),
+            v2[1] * gridSize - this.props.nodeRadius * Math.sin(angle)
+        );
+
+        this.context.rotate(angle);
+        
+        this.context.moveTo(-1.4 * mag, 0);
+        this.context.lineTo(-2 * mag, 0.8 * mag);
+        this.context.lineTo(0, 0);
+        this.context.lineTo(-2 * mag, -0.8 * mag);
+        this.context.lineTo(-1.4 * mag, 0);
+        this.context.stroke();
+        this.context.clip();
+        this.context.fill();
+
+        this.context.restore();
     }
 }
 
@@ -269,9 +300,10 @@ export default Canvas;
 
 // Notes:
 /* 
-Abstract canvas array, separate logic and drawing between two components.
-Use setState to trigger rerenders.
-Prevent the canvas element itself from rerendering. > done.
+
+Abstract canvas array, separate logic and drawing between two components > done
+Use setState to trigger rerenders > done
+Prevent the canvas element itself from rerendering. > done
 Using offsetX and offsetY breaks when zooming in with trackpad. (Standard browser zooming works)
 
 */

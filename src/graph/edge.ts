@@ -7,10 +7,17 @@ export default class Edge<T> {
     
     private weight: number;
 
-    constructor(start: Vertex<T>, end: Vertex<T>, weight: number) {
+    constructor(start: Vertex<T>, end: Vertex<T>, weight?: number) {
         this.start = start;
         this.end = end;
-        this.weight = weight;
+        if (weight) {
+            this.weight = weight;
+        } else {
+            let p1 = this.start.getPosition();
+            let p2 = this.end.getPosition();
+            // todo: replace with Euclidean Distance method in Grid Component. Extract as utility method.
+            this.weight = parseFloat((Math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)).toFixed(1));  
+        }
     }
 
     equals(e: Edge<T>): boolean {
