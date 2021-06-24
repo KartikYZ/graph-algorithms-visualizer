@@ -14,8 +14,8 @@ interface Props {
 interface State {
     hoveringVertex: Vertex<any> | null,
     currentVertex: Vertex<any> | null,
-    VertexSet: HashSet<Vertex<any>> | null  // replace with Graph class? Will this ever be null?
-    EdgeSet: HashSet<Edge<any>> | null    // --^
+    VertexSet: HashSet<Vertex<any>>  // replace with Graph class? Will this ever be null?
+    EdgeSet: HashSet<Edge<any>>    // --^
 }
 
 interface GridState {
@@ -45,7 +45,6 @@ class Grid extends React.Component<Props, State> {
     }   
 
     handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
-        console.log('clicked!');
 
         if (this.state.hoveringVertex) {
             if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
@@ -57,6 +56,32 @@ class Grid extends React.Component<Props, State> {
                     currentVertex: this.state.hoveringVertex
                 });
             }
+
+            if (!this.state.VertexSet.contains(this.state.hoveringVertex)) {
+                this.state.VertexSet.add(this.state.hoveringVertex);
+            }
+        }
+
+    }
+
+    handleRightClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+        
+        event.preventDefault();
+
+        if (this.state.hoveringVertex) {
+
+            if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
+                this.setState({
+                    currentVertex: null
+                });
+            }
+
+            if (this.state.VertexSet.contains(this.state.hoveringVertex)) {
+                this.state.VertexSet.remove(this.state.hoveringVertex);
+                this.setState({});
+            }
+
+            
         }
     }
 
@@ -89,7 +114,10 @@ class Grid extends React.Component<Props, State> {
           nodeRadius={this.props.nodeRadius}
           hoveringVertex={this.state.hoveringVertex}
           currentVertex={this.state.currentVertex}
+          VertexSet={this.state.VertexSet}
+          EdgeSet={this.state.EdgeSet}
           onClick={(event) => this.handleClick(event)}
+          handleRightClick={(event) => this.handleRightClick(event)}
           onMouseMove={(event) => this.handleMouseMove(event)}
         />);
     }

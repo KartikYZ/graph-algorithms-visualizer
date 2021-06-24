@@ -22,6 +22,7 @@ export default class HashSet<T> {  // implemented as a list for now.
             }
         }
         this.set.splice(index, 1);
+        this.size--;
     }
 
     contains(obj: any) {
@@ -31,6 +32,10 @@ export default class HashSet<T> {  // implemented as a list for now.
             }
         }
         return false;
+    }
+
+    getSet(): T[] {     // replace with an iterator.
+        return this.set;
     }
 
     getSize(): number {

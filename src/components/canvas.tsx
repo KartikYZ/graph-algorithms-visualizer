@@ -1,6 +1,7 @@
 import React from 'react';
 import './styles.css';
 
+import HashSet from '../utils/hashSet';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
 
@@ -12,7 +13,11 @@ interface Props {
     nodeRadius: number,
     hoveringVertex: Vertex<any> | null,
     currentVertex: Vertex<any> | null,
+    VertexSet: HashSet<Vertex<any>>,  // replace with Graph class?
+    EdgeSet: HashSet<Edge<any>>,
+
     onClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
+    handleRightClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
     onMouseMove: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void
 }
 
@@ -38,9 +43,10 @@ class Canvas extends React.Component<Props, State> {
     private static COLORS = {
         grid_color: `rgba(${grid_shade}, ${grid_shade}, ${grid_shade})`,
         node_hover_color: `rgba(${hover_shade}, ${hover_shade}, ${hover_shade}, 0.5)`,
-        active_node_color: 'rgba(50, 100, 168, 0.7)',
+        // active_node_color: 'rgba(50, 100, 168, 0.7)',
+        active_node_color: 'rgba(255, 255, 255, 0.3)',
         // current_node_color: 'rgba(98, 217, 131, 0.5)',
-        current_node_color: 'rgba(255, 255, 255, 0.5)',
+        current_node_color: 'rgba(255, 255, 255, 0.7)',
         inactive_node_color: `rgba(${hover_shade}, ${hover_shade}, ${hover_shade}, 0.7)`,
         edge_hover_color: 'rgba(50, 100, 168, 0.5)',
         default_edge_color: 'rgba(50, 100, 168, 1)',
@@ -61,6 +67,7 @@ class Canvas extends React.Component<Props, State> {
             id="canvas" 
             ref={this.canvasRef} 
             onClick={this.props.onClick}
+            onContextMenu={this.props.handleRightClick}
             onMouseMove={this.props.onMouseMove}
         />
         
@@ -110,6 +117,11 @@ class Canvas extends React.Component<Props, State> {
                     Canvas.HOVER_RADIUS, 
                     Canvas.COLORS.node_hover_color, 
                     true);
+            }
+
+            for (let vertex of this.props.VertexSet.getSet()) {
+                if (!vertex.equals(this.props.currentVertex))
+                    this.drawVertex(vertex);
             }
 
             if (this.props.currentVertex) {
@@ -192,9 +204,9 @@ class Canvas extends React.Component<Props, State> {
 
     drawVertex(v: Vertex<any>): void {
         this.drawCircle(
-            v.getPosition()[0] * this.props.gridSize,
+            v.getPosition()[0] * this.props.gridSize,   // don't call getPosition() twice
             v.getPosition()[1] * this.props.gridSize,
-            this.props.nodeRadius,
+            Canvas.HOVER_RADIUS,
             Canvas.COLORS.active_node_color,
             true
         );
