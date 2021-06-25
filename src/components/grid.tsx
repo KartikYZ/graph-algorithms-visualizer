@@ -46,8 +46,8 @@ class Grid extends React.Component<Props, State> {
         }
     }   
 
-    // TODO: Removing vertex does not remove incident vertices. Graph class required for this!
-    // TODO2: Undirected vs Directed Edges!
+    // TODO: Removing vertex does not remove incident vertices. Graph class required for this! > partially done
+    // TODO2: Undirected vs Directed Edges! > done
 
     handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
 
@@ -66,7 +66,7 @@ class Grid extends React.Component<Props, State> {
                     }
                 }
 
-                this.setState({     // use second form of setState here to save edges? UPD: Not required.
+                this.setState({     // use second form of setState here to save edges? Updt: Not required.
                     currentVertex: this.state.hoveringVertex,
                     hoveringEdge: null
                 });
@@ -93,6 +93,17 @@ class Grid extends React.Component<Props, State> {
 
             if (this.state.VertexSet.contains(this.state.hoveringVertex)) {
                 this.state.VertexSet.remove(this.state.hoveringVertex);
+                // temp
+                let removeEdges = [];
+                for (let edge of this.state.EdgeSet.getSet()) {
+                    if (edge.start.equals(this.state.hoveringVertex) || edge.end.equals(this.state.hoveringVertex)) {
+                        removeEdges.push(edge);
+                    }
+                }
+                for (let edge of removeEdges) {
+                    this.state.EdgeSet.remove(edge);
+                }
+                // temp />
                 // this.setState({});
                 this.setState({
                     currentVertex: null,
@@ -202,7 +213,7 @@ class Grid extends React.Component<Props, State> {
         let nearestVertex: [number, number] = this.nearestVertexInPixels(cursor);
         // this.gridState.nearestVertexInPixels = nearestVertex;
         if (nearestVertex[0] > 0 && nearestVertex[0] < Canvas.WIDTH && nearestVertex[1] > 0 && nearestVertex[1] < Canvas.HEIGHT) {
-            return this.euclideanDist(cursor, nearestVertex) < Canvas.HOVER_RADIUS; // and with conditional to assign isHovering directly here. This will cause redundant renders.
+            return this.euclideanDist(cursor, nearestVertex) < Canvas.VERTEX_RADIUS; // and with conditional to assign isHovering directly here. This will cause redundant renders.
         }
         return false;
     }

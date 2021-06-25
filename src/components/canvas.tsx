@@ -22,11 +22,7 @@ interface Props {
     onMouseMove: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void
 }
 
-interface State {
-    hoverVertexInPixels: number[] | null;
-}
-
-class Canvas extends React.Component<Props, State> {
+class Canvas extends React.Component<Props> {
 
     public static defaultProps = {
         nodeRadius: 5
@@ -39,7 +35,7 @@ class Canvas extends React.Component<Props, State> {
     
     public static WIDTH: number = 1600;
     public static HEIGHT: number = 800;
-    public static HOVER_RADIUS: number = 10;
+    public static VERTEX_RADIUS: number = 10;
 
     private static COLORS = {
         grid_color: `rgba(${grid_shade}, ${grid_shade}, ${grid_shade})`,
@@ -58,10 +54,6 @@ class Canvas extends React.Component<Props, State> {
 
         this.canvasRef = React.createRef<HTMLCanvasElement>();
         this.canvas = null;
-
-        this.state = {
-            hoverVertexInPixels: null
-        }
 
         // Dan Abramov on StackOverflow: a constant element tells React to never rerender.
         this.constCanvasElement = <canvas
@@ -110,50 +102,42 @@ class Canvas extends React.Component<Props, State> {
             
             this.drawGrid();
 
-            // destructure props here.
+            const { 
+                hoveringVertex, 
+                hoveringEdge, 
+                currentVertex, 
+                VertexSet, 
+                EdgeSet } = this.props;
             
             // hover vertex
-            if (this.props.hoveringVertex) {
-                // use drawVertex for these
-                this.drawCircle(
-                    this.props.hoveringVertex.getPosition()[0] * this.props.gridSize,
-                    this.props.hoveringVertex.getPosition()[1] * this.props.gridSize, 
-                    Canvas.HOVER_RADIUS, 
-                    Canvas.COLORS.node_hover_color, 
-                    true);
+            if (hoveringVertex) {
+                this.drawHoverVertex(hoveringVertex);
             }
 
             // vertex set
-            for (let vertex of this.props.VertexSet.getSet()) {
-                if (!vertex.equals(this.props.currentVertex))
-                    this.drawVertex(vertex);
+            for (let vertex of VertexSet.getSet()) {
+                if (!vertex.equals(currentVertex))
+                    this.drawGraphVertex(vertex);
             }
 
             // current active vertex
-            if (this.props.currentVertex) {
-                // use drawVertex for these
-                this.drawCircle(
-                    this.props.currentVertex.getPosition()[0] * this.props.gridSize,
-                    this.props.currentVertex.getPosition()[1] * this.props.gridSize, 
-                    Canvas.HOVER_RADIUS, 
-                    Canvas.COLORS.current_node_color, 
-                    true
-                );      
+            if (currentVertex) {
+                this.drawCurrentVertex(currentVertex);
                 // how about an outline?
             }
-
-            if (this.props.hoveringEdge) {
-                // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
-                this.drawDirectedEdge(this.props.hoveringEdge);
-            }
-
             // hover edge
 
-            for (let edge of this.props.EdgeSet.getSet()) {
+            if (hoveringEdge) {
+                // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
+                this.drawDirectedEdge(hoveringEdge);
+            }
+
+            // edge set
+
+            for (let edge of EdgeSet.getSet()) {
                 // this.drawUndirectedEdge(edge);
                 this.drawDirectedEdge(edge);
             }
-            // edge set
         }
     }
 
@@ -202,8 +186,7 @@ class Canvas extends React.Component<Props, State> {
     }
 
     drawCircle(x: number, y: number, r: number, color: string, fill = true): void {
-        // console.log(x, y, r, color, fill, context);
-
+        
         this.context.save();
         this.context.beginPath();
         this.context.arc(x, y, r, 0, 2 * Math.PI, true);
@@ -219,14 +202,30 @@ class Canvas extends React.Component<Props, State> {
         this.context.restore();
     }
 
-    drawVertex(v: Vertex<any>): void {
+    drawVertex(v: Vertex<any>, color: string): void {
+        
+        const pos: [number, number] = v.getPosition();
+        const { gridSize } = this.props;
+        
         this.drawCircle(
-            v.getPosition()[0] * this.props.gridSize,   // don't call getPosition() twice
-            v.getPosition()[1] * this.props.gridSize,
-            Canvas.HOVER_RADIUS,
-            Canvas.COLORS.active_node_color,
+            pos[0] * gridSize,
+            pos[1] * gridSize,
+            Canvas.VERTEX_RADIUS,
+            color,
             true
         );
+    }
+
+    drawHoverVertex(v: Vertex<any>) {
+        this.drawVertex(v, Canvas.COLORS.node_hover_color);
+    }
+
+    drawCurrentVertex(v: Vertex<any>) {
+        this.drawVertex(v, Canvas.COLORS.current_node_color);
+    }
+
+    drawGraphVertex(v: Vertex<any>) {
+        this.drawVertex(v, Canvas.COLORS.active_node_color);
     }
 
     drawUndirectedEdge(e: Edge<any>): void {
@@ -304,13 +303,15 @@ class Canvas extends React.Component<Props, State> {
         this.context.strokeStyle = 'black';
         this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
         
-        // this.context.strokeRect(-10, -10, 20, 20);
+        this.context.strokeRect(-15, -15, 30, 30);
 
         this.context.fillRect(-15, -15, 30, 30);
+        // this.drawCircle(0, 0, 15, 'rgba(255, 255, 255, 0.8)', true);
 
         this.context.font = '18px serif';
         this.context.fillStyle = 'black';
-        this.context.fillText(e.getWeight().toString(), -10, 6);
+        let weight: string = e.getWeight().toString();
+        this.context.fillText(weight, -this.context.measureText(weight).width / 2, 6);
         this.context.restore();
         
     }
