@@ -20,7 +20,7 @@ export default class Edge<T> {
         }
     }
 
-    equals(e: Edge<T>): boolean {
+    equals(e: Object): boolean {
         if (!(e instanceof Edge) || e == null) {
             return false;
         } else if (this.start.equals(e.start) && this.end.equals(e.end)) {
@@ -37,7 +37,9 @@ export default class Edge<T> {
         return `start: ${this.start}, end:${this.end}`;
     }
 
-    hash(): string {
-        return this.toString();
+    hashCode(): number {
+        let hash = 19;
+        hash = 29 * hash + this.start.hashCode();
+        return 31 * hash + this.end.hashCode();
     }
 }

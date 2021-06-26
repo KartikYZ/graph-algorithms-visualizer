@@ -32,7 +32,6 @@ class Canvas extends React.Component<Props> {
     private canvas: HTMLCanvasElement | null;
     private constCanvasElement: any;
     
-    
     public static WIDTH: number = 1600;
     public static HEIGHT: number = 800;
     public static VERTEX_RADIUS: number = 10;
@@ -129,14 +128,14 @@ class Canvas extends React.Component<Props> {
 
             if (hoveringEdge) {
                 // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
-                this.drawDirectedEdge(hoveringEdge);
+                this.drawUndirectedHoverEdge(hoveringEdge);
             }
 
             // edge set
 
             for (let edge of EdgeSet.getSet()) {
                 // this.drawUndirectedEdge(edge);
-                this.drawDirectedEdge(edge);
+                this.drawDirectedEdge(edge, false);
             }
         }
     }
@@ -235,7 +234,6 @@ class Canvas extends React.Component<Props> {
         const { gridSize, nodeRadius } = this.props;
 
         this.context.save();
-        // this.context.strokeStyle = Canvas.COLORS.active_node_color;
         this.context.strokeStyle = 'rgba(255, 255, 255, 0.7)';
         this.context.lineWidth = nodeRadius;
         this.context.beginPath();
@@ -261,18 +259,19 @@ class Canvas extends React.Component<Props> {
         this.context.restore();
     }
 
-    drawDirectedEdge(e: Edge<any>): void {
+    drawDirectedEdge(e: Edge<any>, showWeights = true): void {      // extract drawArrow and drawWeight;
         this.drawUndirectedEdge(e);
 
         let v1 = e.start.getPosition();
         let v2 = e.end.getPosition();
+        let weight: string = e.getWeight().toString();
 
-        let angle = Math.atan2(v2[1] - v1[1], v2[0] - v1[0]);
-        
         let { gridSize } = this.props;
+        let angle = Math.atan2(v2[1] - v1[1], v2[0] - v1[0]);
         let mag = 10;
-
+        
         this.context.save();
+        
         this.context.strokeStyle = this.context.fillStyle = Canvas.COLORS.current_node_color;
 
         this.context.translate(
@@ -293,27 +292,26 @@ class Canvas extends React.Component<Props> {
 
         this.context.restore();
         
-        this.context.save();
+        if (showWeights) {
+            this.context.save();
         
-        this.context.translate(
-            0.5 * (v2[0] + v1[0]) * gridSize,
-            0.5 * (v2[1] + v1[1]) * gridSize
-        );
+            this.context.translate(
+                0.5 * (v2[0] + v1[0]) * gridSize,
+                0.5 * (v2[1] + v1[1]) * gridSize
+            );
+                
+            this.context.strokeStyle = 'black';
+            this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
             
-        this.context.strokeStyle = 'black';
-        this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
-        
-        this.context.strokeRect(-15, -15, 30, 30);
+            this.context.strokeRect(-15, -15, 30, 30);
+            this.context.fillRect(-15, -15, 30, 30);
+            // this.drawCircle(0, 0, 15, 'rgba(255, 255, 255, 0.8)', true);
 
-        this.context.fillRect(-15, -15, 30, 30);
-        // this.drawCircle(0, 0, 15, 'rgba(255, 255, 255, 0.8)', true);
-
-        this.context.font = '18px serif';
-        this.context.fillStyle = 'black';
-        let weight: string = e.getWeight().toString();
-        this.context.fillText(weight, -this.context.measureText(weight).width / 2, 6);
-        this.context.restore();
-        
+            this.context.font = '18px serif';
+            this.context.fillStyle = 'black';
+            this.context.fillText(weight, -this.context.measureText(weight).width / 2, 6);
+            this.context.restore();
+        }
     }
 }
 

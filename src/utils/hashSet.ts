@@ -1,4 +1,6 @@
-export default class HashSet<T> {  // implemented as a list for now.
+import Hashable from "./hashable";
+
+export default class HashSet<T extends Hashable> {  // implemented as a list for now.
 
     private set: T[];
     private size: number;
@@ -13,7 +15,7 @@ export default class HashSet<T> {  // implemented as a list for now.
         this.size++;
     }
 
-    remove(obj: any): void {
+    remove(obj: T): void {
         let index = -1;
         for (let i = 0; i < this.set.length; i++) {
             if (obj.equals(this.set[i])) {
@@ -25,7 +27,7 @@ export default class HashSet<T> {  // implemented as a list for now.
         this.size--;
     }
 
-    contains(obj: any) {
+    contains(obj: T): boolean {
         for (let i = 0; i < this.set.length; i++) {
             if (obj.equals(this.set[i])) {
                 return true;
