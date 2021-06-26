@@ -29,6 +29,14 @@ export default class Edge<T> {
         return false;
     }
 
+    getStart(): Vertex<T> {
+        return this.start;
+    }
+
+    getEnd(): Vertex<T> {
+        return this.end;
+    }
+
     getWeight(): number {
         return this.weight;
     }

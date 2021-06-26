@@ -1,4 +1,8 @@
 import Vertex from "./vertex";
+import Edge from "./edge"
+import HashMap from "../utils/hashMap";
+import HashSet from "../utils/hashSet";
+import Graph from "./graph";
 
 export let main = () => {
     let map = new Map<Vertex<number>, Vertex<number>[]>();

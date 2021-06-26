@@ -1,4 +1,4 @@
-import Hashable from "./hashable";
+import { Hashable } from "./hashable";
 
 export default class HashSet<T extends Hashable> {  // implemented as a list for now.
 
@@ -25,7 +25,7 @@ export default class HashSet<T extends Hashable> {  // implemented as a list for
         }
         this.set.splice(index, 1);
         this.size--;
-    }
+    } 
 
     contains(obj: T): boolean {
         for (let i = 0; i < this.set.length; i++) {
@@ -52,6 +52,20 @@ export default class HashSet<T extends Hashable> {  // implemented as a list for
     toString(): string {
         return '';
     }
-}
 
-// property equals does not exist on type T. Change any to T.
+    equals(obj: Object | null): boolean {
+        if (!(obj instanceof HashSet) || obj == null) {
+            return false;
+        } else if (this.size !== obj.size) {
+            return false;
+        }
+
+        for (let i = 0; i < this.size; i++) {
+            if (!this.set[i].equals(obj.set[i])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

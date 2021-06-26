@@ -1,6 +1,8 @@
 import { Hashable, Equatable } from "./hashable";
 import HashSet from "./hashSet";
 
+// TODO: See deductions and rectify!
+
 export default class HashMap<K extends Hashable, V extends Equatable> {
 
     private table: (MapEntry<K, V> | null)[];
@@ -156,6 +158,10 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
         return values;
     }
 
+    public getSize() {
+        return this.size;
+    }
+
     public clear(): void {
         this.table = new Array<MapEntry<K, V> | null>(HashMap.INITIAL_CAPACITY);
         this.length = HashMap.INITIAL_CAPACITY;
@@ -225,73 +231,42 @@ class MapEntry<K extends Hashable, V extends Equatable> {
         this.next = next;
     }
 
-    /**
-     * Gets the key.
-     *
-     * @return the key
-     */
     public getKey(): K {
         return this.key;
     }
 
-    /**
-     * Gets the value.
-     *
-     * @return the value
-     */
     public getValue(): V {
         return this.value;
     }
 
-    /**
-     * Gets the next entry.
-     *
-     * @return the next entry
-     */
     public getNext(): MapEntry<K, V> | null {
         return this.next;
     }
 
-    /**
-     * Sets the key.
-     *
-     * @param key the new key
-     */
     public setKey(key: K): void {
         this.key = key;
     }
 
-    /**
-     * Sets the value.
-     *
-     * @param value the new value
-     */
     public setValue(value: V): void {
         this.value = value;
     }
 
-    /**
-     * Sets the next entry.
-     *
-     * @param next the new next entry
-     */
     public setNext(next: MapEntry<K, V> | null): void {
         this.next = next;
     }
 
     public toString(): string {
-        let key: string = this.key == null ? "null" : this.key.toString();
-        let value: string = this.value == null ? "null" : this.value.toString();
+        let key: string = this.key.toString();
+        let value: string = this.value.toString();
         return `(${key}, ${value})`;
     }
 
     public equals(obj: object): boolean {
-        // DO NOT USE THIS METHOD IN YOUR CODE! This is for testing ONLY!
         if (!(obj instanceof MapEntry)) {
             return false;
         } else {
-            let that: MapEntry<K, V> = obj as MapEntry<K, V>;
-            return that.getKey().equals(this.key) && that.getValue().equals(this.value);
+            // let other: MapEntry<K, V> = obj as MapEntry<K, V>;
+            return obj.getKey().equals(this.key) && obj.getValue().equals(this.value);
         }
     }
 }
