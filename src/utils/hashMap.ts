@@ -1,8 +1,9 @@
 import { Hashable, Equatable } from "./hashable";
+import HashSet from "./hashSet";
 
 export default class HashMap<K extends Hashable, V extends Equatable> {
 
-    private table: MapEntry<K, V>[];
+    private table: (MapEntry<K, V> | null)[];
     private size: number;
     private length: number;
 
@@ -10,7 +11,7 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
     public static readonly MAX_LOAD_FACTOR = 0.75;
 
     constructor() {
-        this.table = new Array<MapEntry<K, V>>(HashMap.INITIAL_CAPACITY);
+        this.table = new Array<MapEntry<K, V> | null>(HashMap.INITIAL_CAPACITY);
         this.length = HashMap.INITIAL_CAPACITY;
         this.size = 0;
     }
@@ -49,13 +50,120 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
         return oldValue;
     }
 
+    public remove(key: K): V {
+        if (key == null) {
+            throw new Error("Given key is null.");
+        }
+        let index = this.hashAndCompression(key);
+        let current: MapEntry<K, V> | null = this.table[index];
+
+        if (current == null) {
+            throw new Error(`Key: ${key} not in map.`);
+        }
+
+        let toRemove: V | null = null;
+        
+        if (current.getKey().equals(key)) {
+            toRemove = current.getValue();
+            this.table[index] = current.getNext();
+            this.size--;
+            return toRemove;
+        }
+
+        while (current!.getNext() != null) {
+            if (current!.getNext()!.getKey().equals(key)) {
+                toRemove = current!.getNext()!.getValue();
+                current!.setNext(current!.getNext()!.getNext());
+                this.size--;
+            }
+            current = current!.getNext();
+        }
+
+        if (toRemove == null) {
+            throw new Error(`Key: ${key} not in map.`);
+        }
+
+        return toRemove;
+    }
+
+    public get(key: K): V {
+        if (key == null) {
+            throw new Error("Key is null.");
+        }
+        let index = this.hashAndCompression(key);
+        let current = this.table[index];
+
+        while (current != null) {
+            if (current.getKey().equals(key)) {
+                return current.getValue();
+            }
+            current = current.getNext();
+        }
+        throw new Error("Key: " + key + " not in map.");
+    }
+
+    public containsKey(key: K): boolean {
+        if (key == null) {
+            throw new Error("Key is null.");
+        }
+        let index = this.hashAndCompression(key);
+        let current = this.table[index];
+        while (current != null) {
+            if (current.getKey().equals(key)) {
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }
+
+    public keySet(): HashSet<K> {
+        
+        let keys = new HashSet<K>();
+        for (let entry of this.table) {
+            if (entry) {
+                let current: MapEntry<K, V> | null = entry;
+                while (current != null) {
+                    keys.add(current.getKey());
+                    current = current.getNext();
+                }
+            }
+
+            // break on keys.size() == size
+            if (keys.getSize() === this.size) {
+                break;      // prevents traversal of additional null values in table base array.
+            }
+        }
+
+        return keys;
+    }
+
+    public values(): V[] {
+        let values = [];
+        for (let entry of this.table) {
+            if (entry) {
+                let current: MapEntry<K, V> | null = entry;
+                while (current != null) {
+                    values.push(current.getValue());
+                    current = current.getNext();
+                }
+            }
+            if (values.length === this.size) {
+                break;      // prevents traversal of additional null values in table base array.
+            }
+        }
+
+        return values;
+    }
+
     public clear(): void {
-        this.table = new Array<MapEntry<K, V>>(HashMap.INITIAL_CAPACITY);
+        this.table = new Array<MapEntry<K, V> | null>(HashMap.INITIAL_CAPACITY);
         this.length = HashMap.INITIAL_CAPACITY;
         this.size = 0;
     }
 
     private resizeBackingTable(length: number): void {
+        
         if (length < this.size) {
             throw new Error(`Length: ${length} is less than current size of hash map.`);
         }
@@ -66,7 +174,7 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
         }
 
         // initialize new array.
-        let oldTable: MapEntry<K, V>[] = this.table;
+        let oldTable: (MapEntry<K, V> | null)[] = this.table;
         this.table = new Array<MapEntry<K, V>>(length);
         this.length = length;
         let counter = 0;
@@ -92,21 +200,13 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
         }
     }
 
-
     private hashAndCompression(key: K): number {
         return Math.abs(key.hashCode() % this.length);
     }
 }
 
-/**
- * Map entry class used for implementing the ExternalChainingHshMap.
- *
- * DO NOT MODIFY THIS FILE!!
- *
- * @author CS 1332 TAs
- * @version 1.0
- */
- class MapEntry<K extends Hashable, V extends Equatable> {
+
+class MapEntry<K extends Hashable, V extends Equatable> {
 
     private key: K;
     private value: V;
