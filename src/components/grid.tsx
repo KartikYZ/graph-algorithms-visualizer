@@ -33,7 +33,7 @@ class Grid extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        let graph = new Graph(true);
+        let graph = new Graph(false);
 
         this.state = {
             hoveringVertex: null,

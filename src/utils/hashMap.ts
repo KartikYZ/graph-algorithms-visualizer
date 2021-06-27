@@ -72,13 +72,14 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
             return toRemove;
         }
 
-        while (current!.getNext() != null) {
-            if (current!.getNext()!.getKey().equals(key)) {
-                toRemove = current!.getNext()!.getValue();
-                current!.setNext(current!.getNext()!.getNext());
+        while (current != null && current.getNext() != null) {
+            if (current.getNext()!.getKey().equals(key)) {
+                toRemove = current.getNext()!.getValue();
+                current.setNext(current.getNext()!.getNext());
                 this.size--;
+                break;
             }
-            current = current!.getNext();
+            current = current.getNext();
         }
 
         if (toRemove == null) {
