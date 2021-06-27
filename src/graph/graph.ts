@@ -149,11 +149,14 @@ export default class Graph<T> {
         // remove from v.incoming
         this.adjacencyMap.get(v).incoming.remove(u);
 
-        if (!this.isDirected) {
+        if (!this.isDirected) {     // commenting block out fixed the issue of removing reverse edges. Inspect this.
             // remove from u.incoming
             this.adjacencyMap.get(u).incoming.remove(v);
             // remove from v.outgoing
             this.adjacencyMap.get(v).outgoing.remove(u);
+            // remove from edgeSet
+            let reverseEdge = new Edge(e.getEnd(), e.getStart());
+            this.edgeSet.remove(reverseEdge);
         }
     }
 

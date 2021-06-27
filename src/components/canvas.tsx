@@ -15,10 +15,7 @@ interface Props {
     hoveringVertex: Vertex<any> | null,
     hoveringEdge: Edge<any> | null,
     currentVertex: Vertex<any> | null,
-    // VertexSet: HashSet<Vertex<any>>,  // replace with Graph class?
-    // EdgeSet: HashSet<Edge<any>>,
     graph: Graph<any>;
-
 
     onClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
     handleRightClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,

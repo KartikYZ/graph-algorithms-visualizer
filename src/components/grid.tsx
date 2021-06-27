@@ -39,20 +39,14 @@ class Grid extends React.Component<Props, State> {
             hoveringVertex: null,
             currentVertex: null,
             hoveringEdge: null,
-            // VertexSet: graph.vertexSet,
-            // EdgeSet: graph.edgeSet,
             graph: graph,
         }
 
         this.gridState = {
             cursor: [-1, -1],
             nearestVertexInPixels: [-1, -1],
-            // isHoveringOverVertex: false
         }
-    }   
-
-    // TODO: Removing vertex does not remove incident vertices. Graph class required for this! > partially done
-    // TODO2: Undirected vs Directed Edges! > done
+    }
 
     handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
 
@@ -65,26 +59,22 @@ class Grid extends React.Component<Props, State> {
             } else {
                 if (this.state.hoveringEdge) {
                     if (!this.state.graph.edgeSet.contains(this.state.hoveringEdge)) {
-                        // this.state.graph.edgeSet.add(this.state.hoveringEdge);
                         this.state.graph.insertEdge(this.state.hoveringEdge);
                     } else {
-                        // this.state.graph.edgeSet.remove(this.state.hoveringEdge);
                         this.state.graph.removeEdge(this.state.hoveringEdge);
                     }
                 }
 
-                this.setState({     // use second form of setState here to save edges? Updt: Not required.
+                this.setState({
                     currentVertex: this.state.hoveringVertex,
                     hoveringEdge: null
                 });
             }
 
             if (!this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
-                // this.state.graph.vertexSet.add(this.state.hoveringVertex);
                 this.state.graph.insertVertex(this.state.hoveringVertex);
             }
         }
-
     }
 
     handleRightClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
@@ -92,35 +82,13 @@ class Grid extends React.Component<Props, State> {
         event.preventDefault();
 
         if (this.state.hoveringVertex) {
-
-            // if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
-            //     this.setState({
-            //         currentVertex: null
-            //     });
-            // }
-
             if (this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
-                // this.state.graph.vertexSet.remove(this.state.hoveringVertex);
-                // // temp
-                // let removeEdges = [];
-                // for (let edge of this.state.graph.edgeSet.getSet()) {
-                //     if (edge.start.equals(this.state.hoveringVertex) || edge.end.equals(this.state.hoveringVertex)) {
-                //         removeEdges.push(edge);
-                //     }
-                // }
-                // for (let edge of removeEdges) {
-                //     this.state.graph.edgeSet.remove(edge);
-                // }
-                // // temp />
                 this.state.graph.removeVertex(this.state.hoveringVertex);
-                // this.setState({});
                 this.setState({
                     currentVertex: null,
                     hoveringEdge: null
                 });
             }
-
-            
         }
     }
 
