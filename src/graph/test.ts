@@ -1,27 +1,27 @@
 import Vertex from "./vertex";
 import Edge from "./edge"
-import HashMap from "../utils/hashMap";
-import HashSet from "../utils/hashSet";
 import Graph from "./graph";
 
-export let main = () => {
-    let map = new Map<Vertex<number>, Vertex<number>[]>();
+export const main = () => {
+    let graph = new Graph(true);
 
-    let a = new Vertex([0, 0], 10);
-    let b = new Vertex([1, 0], 11);
-    let c = new Vertex([2, 0], 12);
-    let d = new Vertex([2, 0], 12);
-    let e = new Vertex([0, 0], 10);     // equivalent to a.
+    let a = new Vertex([0, 0]);
+    let b = new Vertex([1, 0]);
+    let c = new Vertex([0, 1]);
 
-    map.set(a, []);
-    map.set(b, []);
-    map.set(c, []);
-    map.set(d, []);
+    let ab = new Edge(a, b);
+    let bc = new Edge(b, c);
+    let ca = new Edge(c, a);
 
-    // console.log(map.has(a));
-    // console.log(map.has(d));
-    console.log(map.has(e));
-    console.log(a.toString() === e.toString());
+    graph.insertVertex(a);
+    graph.insertVertex(b);
+    graph.insertVertex(c);
+
+    graph.insertEdge(ab);
+    graph.insertEdge(bc);
+    graph.insertEdge(ca);
+    
+    console.log(graph.getAdjacencyMap());
 };
 
 

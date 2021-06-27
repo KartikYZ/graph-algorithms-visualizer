@@ -228,7 +228,11 @@ class MapEntry<K extends Hashable, V extends Equatable> {
     constructor(key: K, value: V, next: MapEntry<K, V> | null) {
         this.key = key;
         this.value = value;
-        this.next = next;
+        if (next) {
+            this.next = next;
+        } else {
+            this.next = null;
+        }
     }
 
     public getKey(): K {

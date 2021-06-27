@@ -79,19 +79,86 @@ export default class Graph<T> {
     }
 
     insertVertex(v: Vertex<T>): void {
+        if (this.vertexSet.contains(v)) {
+            return;
+        }
 
+        this.vertexSet.add(v);
+        this.adjacencyMap.put(v, new IncidenceMap<T>());
     }
 
     insertEdge(e: Edge<T>): void {
+        this.insertEdgeHelper(e);
+
+        if (!this.isDirected) {
+            this.insertEdgeHelper(new Edge(e.getEnd(), e.getStart()));
+        }
+    }
+
+    private insertEdgeHelper(e: Edge<T>): void {
+        if (this.edgeSet.contains(e)) {
+            return;
+        }
+
+        this.edgeSet.add(e);
+
+        let u = e.getStart();
+        let v = e.getEnd();
+
+        this.insertVertex(u);
+        this.insertVertex(v);
+
+        this.adjacencyMap.get(u).outgoing.put(v, e);
+        this.adjacencyMap.get(v).incoming.put(u, e);
 
     }
 
+    /**
+     * Removes Vertex v and all its incident edges in (deg(v)) time.
+     * @param v 
+     */
     removeVertex(v: Vertex<T>): void {  // return removed Vertex?
+        this.vertexSet.remove(v);
+
+        let incidenceMap = this.adjacencyMap.get(v);
+        
+        for (let edge of incidenceMap.incoming.values()) {
+            this.removeEdge(edge);
+        }
+        
+        for (let edge of incidenceMap.outgoing.values()) {
+            this.removeEdge(edge);
+        }
+
+        this.adjacencyMap.remove(v);
 
     }
 
+    /**
+     * Removes edge e from the graph in O(1) time.
+     * @param e 
+     */
     removeEdge(e: Edge<T>): void {
+        this.edgeSet.remove(e);
 
+        let u = e.getStart();
+        let v = e.getEnd();
+
+        // remove from u.outgoing
+        this.adjacencyMap.get(u).outgoing.remove(v);
+        // remove from v.incoming
+        this.adjacencyMap.get(v).incoming.remove(u);
+
+        if (!this.isDirected) {
+            // remove from u.incoming
+            this.adjacencyMap.get(u).incoming.remove(v);
+            // remove from v.outgoing
+            this.adjacencyMap.get(v).outgoing.remove(u);
+        }
+    }
+
+    getAdjacencyMap() {     // for debugging.
+        return this.adjacencyMap;
     }
 }
 
