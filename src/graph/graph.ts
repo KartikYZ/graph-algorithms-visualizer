@@ -157,7 +157,7 @@ export default class Graph<T> {
         }
     }
 
-    getAdjacencyMap() {     // for debugging.
+    getAdjacencyMap(): HashMap<Vertex<T>, IncidenceMap<T>> {     // for debugging.
         return this.adjacencyMap;
     }
 }
