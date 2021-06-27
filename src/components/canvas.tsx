@@ -137,7 +137,7 @@ class Canvas extends React.Component<Props> {
 
             for (let edge of edges) {
                 // this.drawUndirectedEdge(edge);
-                this.drawDirectedEdge(edge, false);
+                this.drawDirectedEdge(edge);
             }
         }
     }
@@ -229,14 +229,14 @@ class Canvas extends React.Component<Props> {
         this.drawVertex(v, Canvas.COLORS.active_node_color);
     }
 
-    drawUndirectedEdge(e: Edge<any>): void {
+    drawUndirectedEdge(e: Edge<any>, color: string = 'rgba(255, 255, 255, 0.7)'): void {
 
         let start = e.start.getPosition();
         let end = e.end.getPosition();
         const { gridSize, nodeRadius } = this.props;
 
         this.context.save();
-        this.context.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+        this.context.strokeStyle = color;
         this.context.lineWidth = nodeRadius;
         this.context.beginPath();
         this.context.moveTo(start[0] * gridSize, start[1] * gridSize);
@@ -246,27 +246,18 @@ class Canvas extends React.Component<Props> {
     }
 
     drawUndirectedHoverEdge(e: Edge<any>): void {   // use drawUndirectedEdge with specific color. This is embarassing.
-        let start = e.start.getPosition();
-        let end = e.end.getPosition();
-        const { gridSize, nodeRadius } = this.props;
-
-        this.context.save();
-        // this.context.strokeStyle = Canvas.COLORS.active_node_color;
-        this.context.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-        this.context.lineWidth = nodeRadius;
-        this.context.beginPath();
-        this.context.moveTo(start[0] * gridSize, start[1] * gridSize);
-        this.context.lineTo(end[0] * gridSize, end[1] * gridSize);
-        this.context.stroke();
-        this.context.restore();
+        let color = 'rgba(255, 255, 255, 0.3)';
+        this.drawUndirectedEdge(e, color);
     }
 
-    drawDirectedEdge(e: Edge<any>, showWeights = true): void {      // extract drawArrow and drawWeight;
+    drawDirectedEdge(e: Edge<any>): void {      // extract drawArrow and drawWeight;
         this.drawUndirectedEdge(e);
+        this.drawEdgeArrow(e);
+    }
 
+    drawEdgeArrow(e: Edge<any>) {
         let v1 = e.start.getPosition();
         let v2 = e.end.getPosition();
-        let weight: string = e.getWeight().toString();
 
         let { gridSize } = this.props;
         let angle = Math.atan2(v2[1] - v1[1], v2[0] - v1[0]);
@@ -293,27 +284,36 @@ class Canvas extends React.Component<Props> {
         this.context.fill();
 
         this.context.restore();
+    }
+
+    drawEdgeWeight(e: Edge<any>, round: boolean = false) {
+
+        let v1 = e.start.getPosition();
+        let v2 = e.end.getPosition();
+        let weight: string = e.getWeight().toString();
+        this.context.save();
+    
+        this.context.translate(
+            0.5 * (v2[0] + v1[0]) * this.props.gridSize,
+            0.5 * (v2[1] + v1[1]) * this.props.gridSize
+        );
         
-        if (showWeights) {
-            this.context.save();
-        
-            this.context.translate(
-                0.5 * (v2[0] + v1[0]) * gridSize,
-                0.5 * (v2[1] + v1[1]) * gridSize
-            );
-                
+        // container
+        if (round) {
+            this.drawCircle(0, 0, 15, 'rgba(255, 255, 255, 0.8)', true);
+            this.drawCircle(0, 0, 15, 'black', false);
+        } else {
             this.context.strokeStyle = 'black';
             this.context.fillStyle = 'rgba(255, 255, 255, 0.8)';
-            
             this.context.strokeRect(-15, -15, 30, 30);
             this.context.fillRect(-15, -15, 30, 30);
-            // this.drawCircle(0, 0, 15, 'rgba(255, 255, 255, 0.8)', true);
-
-            this.context.font = '18px serif';
-            this.context.fillStyle = 'black';
-            this.context.fillText(weight, -this.context.measureText(weight).width / 2, 6);
-            this.context.restore();
         }
+
+        // weight
+        this.context.font = '18px serif';
+        this.context.fillStyle = 'black';
+        this.context.fillText(weight, -this.context.measureText(weight).width / 2, 6);
+        this.context.restore();
     }
 }
 
