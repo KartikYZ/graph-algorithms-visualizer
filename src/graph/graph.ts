@@ -10,8 +10,8 @@ import { Equatable } from "../utils/hashable";
 export default class Graph<T> {
     
     public readonly isDirected: boolean;
-    private vertexSet: HashSet<Vertex<T>>;
-    private edgeSet: HashSet<Edge<T>>;
+    public vertexSet: HashSet<Vertex<T>>;
+    public edgeSet: HashSet<Edge<T>>;
     // private adjacencyMap: HashMap<Vertex<T>, HashSet<Edge<T>>>;
     private adjacencyMap: HashMap<Vertex<T>, IncidenceMap<T>>;      // ?use linked positional list for vertices 
 

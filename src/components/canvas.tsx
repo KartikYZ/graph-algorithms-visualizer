@@ -1,7 +1,8 @@
 import React from 'react';
 import './styles.css';
 
-import HashSet from '../utils/hashSet';
+// import HashSet from '../utils/hashSet';
+import Graph from '../graph/graph';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
 
@@ -14,8 +15,10 @@ interface Props {
     hoveringVertex: Vertex<any> | null,
     hoveringEdge: Edge<any> | null,
     currentVertex: Vertex<any> | null,
-    VertexSet: HashSet<Vertex<any>>,  // replace with Graph class?
-    EdgeSet: HashSet<Edge<any>>,
+    // VertexSet: HashSet<Vertex<any>>,  // replace with Graph class?
+    // EdgeSet: HashSet<Edge<any>>,
+    graph: Graph<any>;
+
 
     onClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
     handleRightClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
@@ -105,16 +108,18 @@ class Canvas extends React.Component<Props> {
                 hoveringVertex, 
                 hoveringEdge, 
                 currentVertex, 
-                VertexSet, 
-                EdgeSet } = this.props;
-            
+                graph } = this.props;
+
+            let vertices = graph.vertices();
+            let edges = graph.edges();
+
             // hover vertex
             if (hoveringVertex) {
                 this.drawHoverVertex(hoveringVertex);
             }
 
             // vertex set
-            for (let vertex of VertexSet.getSet()) {
+            for (let vertex of vertices) {
                 if (!vertex.equals(currentVertex))
                     this.drawGraphVertex(vertex);
             }
@@ -133,7 +138,7 @@ class Canvas extends React.Component<Props> {
 
             // edge set
 
-            for (let edge of EdgeSet.getSet()) {
+            for (let edge of edges) {
                 // this.drawUndirectedEdge(edge);
                 this.drawDirectedEdge(edge, false);
             }

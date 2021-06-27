@@ -1,10 +1,10 @@
 import React from 'react';
 import Canvas from './canvas';
 
-
-import HashSet from '../utils/hashSet';
+// import HashSet from '../utils/hashSet';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
+import Graph from '../graph/graph'
 
 interface Props {
     gridSize: number,
@@ -15,8 +15,9 @@ interface State {
     hoveringVertex: Vertex<any> | null,
     currentVertex: Vertex<any> | null,
     hoveringEdge: Edge<any> | null,
-    VertexSet: HashSet<Vertex<any>>  // replace with Graph class?
-    EdgeSet: HashSet<Edge<any>>    // --^
+    // VertexSet: HashSet<Vertex<any>>  // replace with Graph class?
+    // EdgeSet: HashSet<Edge<any>>    // --^
+    graph: Graph<any>
 }
 
 interface GridState {
@@ -31,12 +32,16 @@ class Grid extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
+
+        let graph = new Graph(true);
+
         this.state = {
             hoveringVertex: null,
             currentVertex: null,
             hoveringEdge: null,
-            VertexSet: new HashSet<Vertex<any>>(),
-            EdgeSet: new HashSet<Edge<any>>()
+            // VertexSet: graph.vertexSet,
+            // EdgeSet: graph.edgeSet,
+            graph: graph,
         }
 
         this.gridState = {
@@ -59,10 +64,10 @@ class Grid extends React.Component<Props, State> {
                 });
             } else {
                 if (this.state.hoveringEdge) {
-                    if (!this.state.EdgeSet.contains(this.state.hoveringEdge)) {
-                        this.state.EdgeSet.add(this.state.hoveringEdge);
+                    if (!this.state.graph.edgeSet.contains(this.state.hoveringEdge)) {
+                        this.state.graph.edgeSet.add(this.state.hoveringEdge);
                     } else {
-                        this.state.EdgeSet.remove(this.state.hoveringEdge);
+                        this.state.graph.edgeSet.remove(this.state.hoveringEdge);
                     }
                 }
 
@@ -72,8 +77,8 @@ class Grid extends React.Component<Props, State> {
                 });
             }
 
-            if (!this.state.VertexSet.contains(this.state.hoveringVertex)) {
-                this.state.VertexSet.add(this.state.hoveringVertex);
+            if (!this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
+                this.state.graph.vertexSet.add(this.state.hoveringVertex);
             }
         }
 
@@ -91,17 +96,17 @@ class Grid extends React.Component<Props, State> {
             //     });
             // }
 
-            if (this.state.VertexSet.contains(this.state.hoveringVertex)) {
-                this.state.VertexSet.remove(this.state.hoveringVertex);
+            if (this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
+                this.state.graph.vertexSet.remove(this.state.hoveringVertex);
                 // temp
                 let removeEdges = [];
-                for (let edge of this.state.EdgeSet.getSet()) {
+                for (let edge of this.state.graph.edgeSet.getSet()) {
                     if (edge.start.equals(this.state.hoveringVertex) || edge.end.equals(this.state.hoveringVertex)) {
                         removeEdges.push(edge);
                     }
                 }
                 for (let edge of removeEdges) {
-                    this.state.EdgeSet.remove(edge);
+                    this.state.graph.edgeSet.remove(edge);
                 }
                 // temp />
                 // this.setState({});
@@ -158,8 +163,9 @@ class Grid extends React.Component<Props, State> {
           hoveringVertex={this.state.hoveringVertex}
           hoveringEdge={this.state.hoveringEdge}
           currentVertex={this.state.currentVertex}
-          VertexSet={this.state.VertexSet}
-          EdgeSet={this.state.EdgeSet}
+        //   VertexSet={this.state.VertexSet}
+        //   EdgeSet={this.state.EdgeSet}
+          graph={this.state.graph}
           onClick={(event) => this.handleClick(event)}
           handleRightClick={(event) => this.handleRightClick(event)}
           onMouseMove={(event) => this.handleMouseMove(event)}
