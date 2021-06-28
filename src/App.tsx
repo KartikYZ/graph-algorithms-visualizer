@@ -23,13 +23,35 @@ class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    this.onDirected = this.onDirected.bind(this);
+    this.onShowWeights = this.onShowWeights.bind(this);
+    this.onShowPositions = this.onShowPositions.bind(this);
     this.onGridSizeChange = this.onGridSizeChange.bind(this);
+    
     this.onDepthFirstSearch = this.onDepthFirstSearch.bind(this);
 
     this.state = {
       sliderValue: 0,
-      graph: new Graph(false)
+      graph: new Graph(false, false, false)
     }
+  }
+
+  onDirected(directedEdges: boolean) {
+    console.log(directedEdges ? "directed": "undirected");
+    this.state.graph.setIsDirected(directedEdges);
+    this.setState({});
+  }
+
+  onShowWeights(showWeights: boolean) {
+    console.log(showWeights ? "showWeights" : "hideWeights");
+    this.state.graph.setShowWeights(showWeights);
+    this.setState({});
+  }
+
+  onShowPositions(showPositions: boolean) {
+    console.log(showPositions ? "showPosition" : "hidePositions");
+    this.state.graph.setShowPositions(showPositions);
+    this.setState({});
   }
 
   onGridSizeChange(sliderValue: number) {
@@ -51,6 +73,11 @@ class App extends React.Component<Props, State> {
           }}
           startButtonProps={{
             onStart: this.onDepthFirstSearch
+          }}
+          graphProps={{
+            onSelectDirectedEdges: this.onDirected,
+            onSelectShowWeights: this.onShowWeights,
+            onSelectShowVertexPositions: this.onShowPositions
           }}
         />
         <Grid 

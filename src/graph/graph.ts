@@ -9,13 +9,18 @@ import { Equatable } from "../utils/hashable";
  */ 
 export default class Graph<T> {
     
-    public readonly isDirected: boolean;
-    public vertexSet: HashSet<Vertex<T>>;
+    private isDirected: boolean;
+    private showWeights: boolean;
+    private showPositions: boolean;
+    public vertexSet: HashSet<Vertex<T>>;   // make private. Use this.references in canvas.
     public edgeSet: HashSet<Edge<T>>;
     private adjacencyMap: HashMap<Vertex<T>, IncidenceMapInterface<T>>;     // ?use linked positional list for vertices 
 
-    constructor(isDirected: boolean) {
+    constructor(isDirected: boolean, showWeights: boolean, showPositions: boolean) {
         this.isDirected = isDirected;
+        this.showWeights = showWeights;
+        this.showPositions = showPositions;
+
         this.vertexSet = new HashSet();
         this.edgeSet = new HashSet();
         this.adjacencyMap = new HashMap();
@@ -159,6 +164,40 @@ export default class Graph<T> {
     getAdjacencyMap(): HashMap<Vertex<T>, IncidenceMap<T>> {     // for debugging.
         return this.adjacencyMap;
     }
+
+    getIsDirected(): boolean {
+        return this.isDirected;
+    }
+
+    setIsDirected(isDirected: boolean): void {
+        
+        if (this.isDirected) {
+            // add reverse edges.
+            for (let edge of this.edgeSet.getSet()) {
+                let reverseEdge = new Edge(edge.getEnd(), edge.getStart());
+                this.insertEdge(reverseEdge);
+            }
+        }
+
+        this.isDirected = isDirected;
+    }
+
+    getShowWeights(): boolean {
+        return this.showWeights;
+    }
+
+    setShowWeights(showWeights: boolean): void {
+        this.showWeights = showWeights;
+    }
+
+    getShowPositions(): boolean {
+        return this.showPositions;
+    }
+
+    setShowPositions(showPositions: boolean): void {
+        this.showPositions = showPositions;
+    }
+
 }
 
 interface IncidenceMapInterface<T> {

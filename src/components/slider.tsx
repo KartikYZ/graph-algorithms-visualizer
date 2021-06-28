@@ -9,7 +9,7 @@ interface State {
     sliderValue: number
 }
 
-class Slider extends React.Component<Props, State> {
+class Slider extends React.Component<Props, State> {    // todo: make reusable/generic
 
     // private sliderLength: number = 7;
     private sliderLength: number = 3;
@@ -36,17 +36,30 @@ class Slider extends React.Component<Props, State> {
     }
 
     render() {
-        return React.createElement(
-            'input', 
-            {
-                type: 'range',
-                id: 'slider',
-                value: this.state.sliderValue,
-                max: this.sliderLength - 1,
-                onChange: (event) => this.handleOnChange(event),
-            },
-            null
+        // return React.createElement(
+        //     'input', 
+        //     {
+        //         type: 'range',
+        //         id: 'slider',
+        //         value: this.state.sliderValue,
+        //         max: this.sliderLength - 1,
+        //         onChange: (event) => this.handleOnChange(event),
+        //     },
+        //     null
+        // );
+        return (
+            <>
+            <input 
+                type="range" 
+                value={this.state.sliderValue} 
+                max={this.sliderLength - 1} 
+                onChange={(event) => this.handleOnChange(event)} 
+                name="slider"
+            />
+            <label>Grid Size</label>
+            </>
         );
+
     }
 }
 

@@ -32,9 +32,11 @@ class Canvas extends React.Component<Props> {
     private canvas: HTMLCanvasElement | null;
     private constCanvasElement: any;
     
+    public static VERTEX_RADIUS: number = 10;
+    // public static _WIDTH: number = 1280;
+    // public static _HEIGHT: number = 640;
     public static WIDTH: number = 1600;
     public static HEIGHT: number = 800;
-    public static VERTEX_RADIUS: number = 10;
 
     private static COLORS = {
         grid_color: `rgba(${grid_shade}, ${grid_shade}, ${grid_shade})`,
@@ -110,6 +112,9 @@ class Canvas extends React.Component<Props> {
             // hover vertex
             if (hoveringVertex) {
                 this.drawHoverVertex(hoveringVertex);
+                if (this.props.graph.getShowPositions()) {
+                    this.drawVertexPosition(hoveringVertex);
+                }
             }
 
             // vertex set
@@ -123,18 +128,32 @@ class Canvas extends React.Component<Props> {
                 this.drawCurrentVertex(currentVertex);
                 // how about an outline?
             }
-            // hover edge
 
+            // hover edge
             if (hoveringEdge) {
                 // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
-                this.drawUndirectedHoverEdge(hoveringEdge);
+                if (this.props.graph.getIsDirected()) {
+                    this.drawDirectedHoverEdge(hoveringEdge);
+                } else {
+                    this.drawUndirectedHoverEdge(hoveringEdge);
+                }
             }
 
             // edge set
-
-            for (let edge of edges) {
-                // this.drawUndirectedEdge(edge);
-                this.drawDirectedEdge(edge);
+            if (this.props.graph.getIsDirected()) {     // todo: call getter once per update
+                for (let edge of edges) {
+                    this.drawDirectedEdge(edge);
+                }
+            } else {
+                for (let edge of edges) {
+                    this.drawUndirectedEdge(edge);
+                }
+            }       
+            
+            if (this.props.graph.getShowWeights()) {
+                for (let edge of edges) {
+                    this.drawEdgeWeight(edge);
+                }
             }
         }
     }
@@ -216,7 +235,6 @@ class Canvas extends React.Component<Props> {
 
     drawHoverVertex(v: Vertex<any>) {
         this.drawVertex(v, Canvas.COLORS.node_hover_color);
-        this.drawVertexPosition(v);
     }
 
     drawCurrentVertex(v: Vertex<any>) {
@@ -273,12 +291,23 @@ class Canvas extends React.Component<Props> {
         this.drawUndirectedEdge(e, color);
     }
 
-    drawDirectedEdge(e: Edge<any>): void {      // extract drawArrow and drawWeight;
-        this.drawUndirectedEdge(e);
-        this.drawEdgeArrow(e);
+    drawDirectedEdge(e: Edge<any>, color?: string): void {      // extract drawArrow and drawWeight;
+        if (color) {
+            this.drawUndirectedEdge(e, color);
+            this.drawEdgeArrow(e, color);
+        } else {
+            this.drawUndirectedEdge(e);
+            this.drawEdgeArrow(e);
+        }
+        
     }
 
-    drawEdgeArrow(e: Edge<any>) {
+    drawDirectedHoverEdge(e: Edge<any>): void {     // rectify alpha channel later.
+        let color = 'rgba(255, 255, 255, 0.3)'
+        this.drawDirectedEdge(e, color);
+    }
+
+    drawEdgeArrow(e: Edge<any>, color?: string) {
         let v1 = e.start.getPosition();
         let v2 = e.end.getPosition();
 
@@ -288,7 +317,11 @@ class Canvas extends React.Component<Props> {
         
         this.context.save();
         
-        this.context.strokeStyle = this.context.fillStyle = Canvas.COLORS.current_node_color;
+        if (color) {
+            this.context.strokeStyle = this.context.fillStyle = color;
+        } else {
+            this.context.strokeStyle = this.context.fillStyle = Canvas.COLORS.current_node_color;
+        }
 
         this.context.translate(
             v2[0] * gridSize - this.props.nodeRadius * Math.cos(angle),
