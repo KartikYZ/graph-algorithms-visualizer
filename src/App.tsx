@@ -44,17 +44,15 @@ class App extends React.Component<Props, State> {
   render() {
     return (
       <React.Fragment>
-        <div style={{height: 80, textAlign: 'center'}}> {/* encapsulate within toolbar */}
-          <Toolbar 
-            sliderProps={{
-              sliderValue: this.state.sliderValue, 
-              onSliderChange: this.onGridSizeChange
-            }}
-            startButtonProps={{
-              onStart: this.onDepthFirstSearch
-            }}
-          />
-        </div>
+        <Toolbar 
+          sliderProps={{
+            sliderValue: this.state.sliderValue, 
+            onSliderChange: this.onGridSizeChange
+          }}
+          startButtonProps={{
+            onStart: this.onDepthFirstSearch
+          }}
+        />
         <Grid 
           gridSize={this.gridSizeValues[this.state.sliderValue]} 
           nodeRadius={5 - this.state.sliderValue}

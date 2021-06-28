@@ -250,8 +250,6 @@ class Canvas extends React.Component<Props> {
         this.context.restore();
 
         this.context.restore();
-
-        
     }
 
     drawUndirectedEdge(e: Edge<any>, color: string = 'rgba(255, 255, 255, 0.7)'): void {
