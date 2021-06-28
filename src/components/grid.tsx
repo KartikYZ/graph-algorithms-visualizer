@@ -8,22 +8,20 @@ import Graph from '../graph/graph'
 
 interface Props {
     gridSize: number,
-    nodeRadius: number
+    nodeRadius: number,
+    graph: Graph<any>
 }
 
 interface State {
     hoveringVertex: Vertex<any> | null,
     currentVertex: Vertex<any> | null,
     hoveringEdge: Edge<any> | null,
-    // VertexSet: HashSet<Vertex<any>>  // replace with Graph class?
-    // EdgeSet: HashSet<Edge<any>>    // --^
     graph: Graph<any>
 }
 
 interface GridState {
     cursor: [number, number],
     nearestVertexInPixels: [number, number],
-    // isHoveringOverVertex: boolean
 }
 
 class Grid extends React.Component<Props, State> {
@@ -33,7 +31,7 @@ class Grid extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        let graph = new Graph(false);
+        let graph = this.props.graph
 
         this.state = {
             hoveringVertex: null,

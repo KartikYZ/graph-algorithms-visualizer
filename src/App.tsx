@@ -3,13 +3,16 @@ import './App.css';
 
 import Toolbar from './components/toolbar';
 import Grid from './components/grid';
+import Graph from './graph/graph';
+import { depthFirstSearch } from './graph/algorithms';
 
 interface Props {
 
 }
 
 interface State {
-  sliderValue: number
+  sliderValue: number,
+  graph: Graph<any>
 }
 
 class App extends React.Component<Props, State> {
@@ -21,13 +24,21 @@ class App extends React.Component<Props, State> {
     super(props);
 
     this.onGridSizeChange = this.onGridSizeChange.bind(this);
+    this.onDepthFirstSearch = this.onDepthFirstSearch.bind(this);
+
     this.state = {
-      sliderValue: 0
+      sliderValue: 0,
+      graph: new Graph(false)
     }
   }
 
   onGridSizeChange(sliderValue: number) {
     this.setState({sliderValue: sliderValue});
+  }
+
+  onDepthFirstSearch() {
+    let visited = depthFirstSearch(this.state.graph, this.state.graph.vertices()[0]);
+    console.log(visited);
   }
 
   render() {
@@ -39,11 +50,15 @@ class App extends React.Component<Props, State> {
               sliderValue: this.state.sliderValue, 
               onSliderChange: this.onGridSizeChange
             }}
+            startButtonProps={{
+              onStart: this.onDepthFirstSearch
+            }}
           />
         </div>
         <Grid 
           gridSize={this.gridSizeValues[this.state.sliderValue]} 
           nodeRadius={5 - this.state.sliderValue}
+          graph={this.state.graph}
         />
       </React.Fragment>
     );

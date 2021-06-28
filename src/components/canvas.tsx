@@ -61,8 +61,7 @@ class Canvas extends React.Component<Props> {
             onClick={this.props.onClick}
             onContextMenu={this.props.handleRightClick}
             onMouseMove={this.props.onMouseMove}
-        />
-        
+        />      
     }
 
     // lifecycle methods
@@ -87,10 +86,8 @@ class Canvas extends React.Component<Props> {
 
                 this.drawGrid();
 
-            }
-            
+            }   
         }
-
     }
 
     componentDidUpdate() {
@@ -219,6 +216,7 @@ class Canvas extends React.Component<Props> {
 
     drawHoverVertex(v: Vertex<any>) {
         this.drawVertex(v, Canvas.COLORS.node_hover_color);
+        this.drawVertexPosition(v);
     }
 
     drawCurrentVertex(v: Vertex<any>) {
@@ -227,6 +225,33 @@ class Canvas extends React.Component<Props> {
 
     drawGraphVertex(v: Vertex<any>) {
         this.drawVertex(v, Canvas.COLORS.active_node_color);
+    }
+
+    drawVertexPosition(v: Vertex<any>) {
+        let pos = v.getPosition();
+        let { gridSize } = this.props;
+        let x = pos[0] * gridSize;
+        let y = pos[1] * gridSize;
+
+        this.context.save();
+
+        this.context.translate(x, y);
+
+        // this.context.strokeStyle = 'black';
+        // this.context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        // this.context.strokeRect(-30, -30, 20, 20);
+        // this.context.fillRect(-30, -30, 20, 20);
+
+        // text   (todo: extract draw text method)
+        let strPos = `(${pos[0]}, ${pos[1]})`;
+        this.context.font = '18px serif';
+        this.context.fillStyle = 'rgba(255, 255, 0, 0.9)';
+        this.context.fillText(strPos, -(this.context.measureText(strPos).width + 10), -10);
+        this.context.restore();
+
+        this.context.restore();
+
+        
     }
 
     drawUndirectedEdge(e: Edge<any>, color: string = 'rgba(255, 255, 255, 0.7)'): void {

@@ -12,15 +12,12 @@ export default class Graph<T> {
     public readonly isDirected: boolean;
     public vertexSet: HashSet<Vertex<T>>;
     public edgeSet: HashSet<Edge<T>>;
-    // private adjacencyMap: HashMap<Vertex<T>, HashSet<Edge<T>>>;
-    private adjacencyMap: HashMap<Vertex<T>, IncidenceMap<T>>;      // ?use linked positional list for vertices 
+    private adjacencyMap: HashMap<Vertex<T>, IncidenceMapInterface<T>>;     // ?use linked positional list for vertices 
 
     constructor(isDirected: boolean) {
         this.isDirected = isDirected;
         this.vertexSet = new HashSet();
         this.edgeSet = new HashSet();
-
-        // this.adjacencyMap = new HashMap<Vertex<T>, HashSet<Edge<T>>>();
         this.adjacencyMap = new HashMap();
     }
 
@@ -110,7 +107,6 @@ export default class Graph<T> {
 
         this.adjacencyMap.get(u).outgoing.put(v, e);
         this.adjacencyMap.get(v).incoming.put(u, e);
-
     }
 
     /**
