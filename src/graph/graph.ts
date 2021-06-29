@@ -10,8 +10,8 @@ import { Equatable } from "../utils/hashable";
 export default class Graph<T> {
     
     private isDirected: boolean;
-    private showWeights: boolean;
-    private showPositions: boolean;
+    private showWeights: boolean;   // canvas rendering 
+    private showPositions: boolean; // canvas rendering 
     public vertexSet: HashSet<Vertex<T>>;   // make private. Use this.references in canvas.
     public edgeSet: HashSet<Edge<T>>;
     private adjacencyMap: HashMap<Vertex<T>, IncidenceMapInterface<T>>;     // ?use linked positional list for vertices 

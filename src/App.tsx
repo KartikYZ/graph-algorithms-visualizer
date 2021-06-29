@@ -37,19 +37,19 @@ class App extends React.Component<Props, State> {
   }
 
   onDirected(directedEdges: boolean) {
-    console.log(directedEdges ? "directed": "undirected");
+    // console.log(directedEdges ? "directed": "undirected");
     this.state.graph.setIsDirected(directedEdges);
     this.setState({});
   }
 
   onShowWeights(showWeights: boolean) {
-    console.log(showWeights ? "showWeights" : "hideWeights");
+    // console.log(showWeights ? "showWeights" : "hideWeights");
     this.state.graph.setShowWeights(showWeights);
     this.setState({});
   }
 
   onShowPositions(showPositions: boolean) {
-    console.log(showPositions ? "showPosition" : "hidePositions");
+    // console.log(showPositions ? "showPosition" : "hidePositions");
     this.state.graph.setShowPositions(showPositions);
     this.setState({});
   }

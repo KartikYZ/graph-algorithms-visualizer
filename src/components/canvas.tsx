@@ -119,13 +119,21 @@ class Canvas extends React.Component<Props> {
 
             // vertex set
             for (let vertex of vertices) {
-                if (!vertex.equals(currentVertex))
+                if (!vertex.equals(currentVertex)) {
                     this.drawGraphVertex(vertex);
+                    // if (this.props.graph.getShowPositions()) {
+                    //     this.drawVertexPosition(vertex);
+                    // }
+                }
+                
             }
 
             // current active vertex
             if (currentVertex) {
                 this.drawCurrentVertex(currentVertex);
+                // if (this.props.graph.getShowPositions()) {
+                //     this.drawVertexPosition(currentVertex);
+                // }
                 // how about an outline?
             }
 
