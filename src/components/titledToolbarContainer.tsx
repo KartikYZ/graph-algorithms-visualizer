@@ -10,10 +10,6 @@ interface State {
 
 class TitledToolbarContainer extends React.Component<Props, State> {
 
-    // constructor(props: Props) {
-    //     super(props);
-    // }
-
     render() {
         let styles = {
             // backgroundColor: '#aaaaaa',

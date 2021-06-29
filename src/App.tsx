@@ -27,6 +27,7 @@ class App extends React.Component<Props, State> {
     this.onShowWeights = this.onShowWeights.bind(this);
     this.onShowPositions = this.onShowPositions.bind(this);
     this.onGridSizeChange = this.onGridSizeChange.bind(this);
+    this.onClear = this.onClear.bind(this);
     
     this.onDepthFirstSearch = this.onDepthFirstSearch.bind(this);
 
@@ -58,6 +59,11 @@ class App extends React.Component<Props, State> {
     this.setState({sliderValue: sliderValue});
   }
 
+  onClear() {
+    this.state.graph.clear();
+    this.setState({});
+  }
+
   onDepthFirstSearch() {
     let visited = depthFirstSearch(this.state.graph, this.state.graph.vertices()[0]);
     console.log(visited);
@@ -77,7 +83,8 @@ class App extends React.Component<Props, State> {
           graphProps={{
             onSelectDirectedEdges: this.onDirected,
             onSelectShowWeights: this.onShowWeights,
-            onSelectShowVertexPositions: this.onShowPositions
+            onSelectShowVertexPositions: this.onShowPositions,
+            onClear: this.onClear
           }}
         />
         <Grid 

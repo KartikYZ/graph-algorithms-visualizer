@@ -137,15 +137,15 @@ class Canvas extends React.Component<Props> {
                 // how about an outline?
             }
 
-            // hover edge
-            if (hoveringEdge) {
-                // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
-                if (this.props.graph.getIsDirected()) {
-                    this.drawDirectedHoverEdge(hoveringEdge);
-                } else {
-                    this.drawUndirectedHoverEdge(hoveringEdge);
-                }
-            }
+            // // hover edge
+            // if (hoveringEdge) {
+            //     // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
+            //     if (this.props.graph.getIsDirected()) {
+            //         this.drawDirectedHoverEdge(hoveringEdge);
+            //     } else {
+            //         this.drawUndirectedHoverEdge(hoveringEdge);
+            //     }
+            // }
 
             // edge set
             if (this.props.graph.getIsDirected()) {     // todo: call getter once per update
@@ -156,7 +156,17 @@ class Canvas extends React.Component<Props> {
                 for (let edge of edges) {
                     this.drawUndirectedEdge(edge);
                 }
-            }       
+            }     
+            
+            // hover edge
+            if (hoveringEdge) {
+                // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
+                if (this.props.graph.getIsDirected()) {
+                    this.drawDirectedHoverEdge(hoveringEdge);
+                } else {
+                    this.drawUndirectedHoverEdge(hoveringEdge);
+                }
+            }
             
             if (this.props.graph.getShowWeights()) {
                 for (let edge of edges) {

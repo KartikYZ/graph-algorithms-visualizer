@@ -27,7 +27,7 @@ function dfsHelper(graph: Graph<any>, startVertex: Vertex<any>, visited: HashSet
 }
 
 // interface GraphAnimationFrame<T> {
-//     visitedVertices: Vertex<T>[],
+//     visitedVertices: Vertex<T>[],    // replace with visited subgraph.
 //     currentVertex: Vertex<T> | null,
 //     visitedEdges: Edge<T>[],
 //     currentOutgoingEdges: Edge<T>[],
@@ -42,9 +42,9 @@ function dfsHelper(graph: Graph<any>, startVertex: Vertex<any>, visited: HashSet
 //     startVertex: Vertex<T>
 // }
 
-interface placeHolderFrame<T> {
-    outgoingEdges: Edge<T>[]
-}
+// interface placeHolderFrame<T> {
+//     outgoingEdges: Edge<T>[]
+// }
 
 // class GraphAnimationFrame<T> {
 //     visitedVertices: Vertex<T>[];

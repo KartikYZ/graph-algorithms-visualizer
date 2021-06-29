@@ -161,6 +161,12 @@ export default class Graph<T> {
         }
     }
 
+    clear(): void {
+        this.vertexSet = new HashSet();
+        this.edgeSet = new HashSet();
+        this.adjacencyMap = new HashMap();
+    }
+
     getAdjacencyMap(): HashMap<Vertex<T>, IncidenceMap<T>> {     // for debugging.
         return this.adjacencyMap;
     }

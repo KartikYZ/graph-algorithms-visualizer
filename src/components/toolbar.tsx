@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Slider from './slider';
-// import StartButton from './startButton';
+import Button from './button';
 
 import TitledToolbarContainer from './titledToolbarContainer';
 // import RadioGroup from './radioGroup';
@@ -19,6 +19,7 @@ interface Props {
         onSelectDirectedEdges: (selected: boolean) => void,
         onSelectShowWeights: (selected: boolean) => void,
         onSelectShowVertexPositions: (selected: boolean) => void
+        onClear: () => void;
     }
 }
 
@@ -52,6 +53,7 @@ class Toolbar extends React.Component<Props, State> {
                     <CheckBox label='Show Weights' onSelect={this.props.graphProps.onSelectShowWeights}/>
                     <CheckBox label='Show Vertex Positions' onSelect={this.props.graphProps.onSelectShowVertexPositions}/>
                     <Slider {...this.props.sliderProps} /> 
+                    <Button label="Clear" onClick={this.props.graphProps.onClear}></Button>
                 </TitledToolbarContainer>
                 <TitledToolbarContainer title="Algorithms"/>
                 <TitledToolbarContainer title="Animation"/>
