@@ -1,7 +1,6 @@
 import React from 'react';
 import './styles.css';
 
-// import HashSet from '../utils/hashSet';
 import Graph from '../graph/graph';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
@@ -363,7 +362,6 @@ class Canvas extends React.Component<Props> {
             this.drawUndirectedEdge(e);
             this.drawEdgeArrow(e);
         }
-        
     }
 
     drawDirectedHoverEdge(e: Edge<any>): void {     // rectify alpha channel later.

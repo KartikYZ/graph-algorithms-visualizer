@@ -1,4 +1,5 @@
 import HashSet from "../utils/hashSet";
+import HashMap from "../utils/hashMap";
 import Queue from "../utils/queue";
 import Graph from "./graph";
 import Vertex from "./vertex";
@@ -6,7 +7,7 @@ import Edge from "./edge";
 
 export function depthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
     let visited = new HashSet<Vertex<any>>();
-    let discoveryEdges = new HashSet<Edge<any>>();
+    let discoveryEdges = new HashMap<Vertex<any>, Edge<any>>();
     let animation = new AnimationBuilder();
 
     dfsHelper(graph, startVertex, visited, discoveryEdges, animation);
@@ -15,7 +16,7 @@ export function depthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): A
 }
 
 function dfsHelper(graph: Graph<any>, startVertex: Vertex<any>, 
-    visited: HashSet<Vertex<any>>, discoveryEdges: HashSet<Edge<any>>, animation: AnimationBuilder): void {
+    visited: HashSet<Vertex<any>>, discoveryEdges: HashMap<Vertex<any>, Edge<any>>, animation: AnimationBuilder): void {
 
     // TODO: record discovery edges.
 
@@ -149,10 +150,10 @@ There is no need to clone anything! The graph is immutable throughout the animat
 One frame of DFS:
     actual graph: taken care of by Canvas ComponentDidUpdate
 
-    start vertex: default is first inserted vertex, can be changed through toolbar
+    start vertex: default is first inserted vertex, (todo:) can be changed through toolbar
     current vertex: the one dfs is called recursively on
     outgoing edges from current vertex: adjMap
     visited vertices: maintain a collection
-    visited edges: maintain a collection
+    discovery edges: maintain a collection
 
 */

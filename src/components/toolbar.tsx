@@ -4,7 +4,6 @@ import Slider from './slider';
 import Button from './button';
 
 import TitledToolbarContainer from './titledToolbarContainer';
-// import RadioGroup from './radioGroup';
 import CheckBox from './checkBox'
 import DropDown from './dropdown';
 
@@ -53,14 +52,6 @@ class Toolbar extends React.Component<Props, State> {
         }
         return (
             <div style={styles}>
-                {/* <StartButton onStartButton={this.props.startButtonProps.onStart}/>
-                <Slider {...this.props.sliderProps} /> */}
-                {/* <TitledToolbarContainer title="Mode">
-                    <RadioGroup label={'Graph'} />
-                    <RadioGroup label={'Grid'} />
-                    <Slider {...this.props.sliderProps} /> 
-                </TitledToolbarContainer> */}
-
                 <TitledToolbarContainer title="Graph">
                     <CheckBox label='Directed Edges' onSelect={this.props.graphProps.onSelectDirectedEdges}/>
                     <CheckBox label='Show Weights' onSelect={this.props.graphProps.onSelectShowWeights}/>

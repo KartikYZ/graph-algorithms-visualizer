@@ -4,7 +4,7 @@ import './App.css';
 import Toolbar from './components/toolbar';
 import Grid from './components/grid';
 import Graph from './graph/graph';
-import { AnimationBuilder, breadthFirstSearch, depthFirstSearch, GraphAnimationFrame } from './graph/algorithms';
+import { depthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame } from './graph/algorithms';
 import Vertex from './graph/vertex';
 
 interface Props {
@@ -41,16 +41,16 @@ class App extends React.Component<Props, State> {
         this.onStart = this.onStart.bind(this);
 
         this.algorithms = {
-        'dfs': depthFirstSearch,
-        'bfs': breadthFirstSearch
+            'dfs': depthFirstSearch,
+            'bfs': breadthFirstSearch
         }
 
         this.state = {
-        sliderValue: 0,
-        graph: new Graph(false, false, false),
-        isAnimating: false,
-        animationFrame: null,
-        algorithm: Object.keys(this.algorithms)[0]
+            sliderValue: 0,
+            graph: new Graph(false, false, false),
+            isAnimating: false,
+            animationFrame: null,
+            algorithm: Object.keys(this.algorithms)[0]
         }    
     }
 
@@ -79,31 +79,27 @@ class App extends React.Component<Props, State> {
     }
 
     onSelection(option: string) {
-        console.log(option);
         this.setState({ algorithm: option })
     }
 
     onStart() {
 
         if (this.state.graph.vertices().length === 0) {
-        return;
+            return;
         }
-        
-        console.log('started!');
 
-        let intervalDelay = 400;  // use slider for this
+        let intervalDelay = 400;  // todo: use slider for this
 
         this.setState({isAnimating: true});
 
         let frames = this.algorithms[this.state.algorithm](this.state.graph, this.state.graph.vertices()[0]).getFrames();
 
         for (let i = 0; i < frames.length; i++) {
-        setTimeout(() => {
-            console.log(frames[i].visitedVertices);
-            this.setState({
-            animationFrame: frames[i]
-            });
-        }, (i + 1) * intervalDelay);
+            setTimeout(() => {
+                this.setState({
+                    animationFrame: frames[i]
+                });
+            }, (i + 1) * intervalDelay);
         }
 
         setTimeout(() => {this.setState({isAnimating: false, animationFrame: null})}, (frames.length + 3) * intervalDelay);
@@ -111,32 +107,32 @@ class App extends React.Component<Props, State> {
 
     render() {
         return (
-        <React.Fragment>
-            <Toolbar 
-            sliderProps={{
-                sliderValue: this.state.sliderValue, 
-                onSliderChange: this.onGridSizeChange
-            }}
-            startButtonProps={{
-                options: Object.keys(this.algorithms),
-                onStart: this.onStart,
-                onSelection: this.onSelection
-            }}
-            graphProps={{
-                onSelectDirectedEdges: this.onDirected,
-                onSelectShowWeights: this.onShowWeights,
-                onSelectShowVertexPositions: this.onShowPositions,
-                onClear: this.onClear,
-            }}
-            />
-            <Grid 
-            gridSize={this.gridSizeValues[this.state.sliderValue]} 
-            nodeRadius={5 - this.state.sliderValue}
-            graph={this.state.graph}
-            isAnimating={this.state.isAnimating}
-            animationFrame={this.state.animationFrame}
-            />
-        </React.Fragment>
+            <React.Fragment>
+                <Toolbar 
+                    sliderProps={{
+                        sliderValue: this.state.sliderValue, 
+                        onSliderChange: this.onGridSizeChange
+                    }}
+                    startButtonProps={{
+                        options: Object.keys(this.algorithms),
+                        onStart: this.onStart,
+                        onSelection: this.onSelection
+                    }}
+                    graphProps={{
+                        onSelectDirectedEdges: this.onDirected,
+                        onSelectShowWeights: this.onShowWeights,
+                        onSelectShowVertexPositions: this.onShowPositions,
+                        onClear: this.onClear,
+                    }}
+                />
+                <Grid 
+                    gridSize={this.gridSizeValues[this.state.sliderValue]} 
+                    nodeRadius={5 - this.state.sliderValue}
+                    graph={this.state.graph}
+                    isAnimating={this.state.isAnimating}
+                    animationFrame={this.state.animationFrame}
+                />
+            </React.Fragment>
         );
     }
 }

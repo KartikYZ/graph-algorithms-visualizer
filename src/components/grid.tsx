@@ -1,7 +1,6 @@
 import React from 'react';
 import Canvas from './canvas';
 
-// import HashSet from '../utils/hashSet';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
 import Graph from '../graph/graph'
