@@ -5,6 +5,7 @@ import './styles.css';
 import Graph from '../graph/graph';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
+import { GraphAnimationFrame } from '../graph/algorithms';
 
 const grid_shade = 190;
 const hover_shade = 190;
@@ -15,7 +16,8 @@ interface Props {
     hoveringVertex: Vertex<any> | null,
     hoveringEdge: Edge<any> | null,
     currentVertex: Vertex<any> | null,
-    graph: Graph<any>;
+    graph: Graph<any>,
+    animationFrame: GraphAnimationFrame | null;
 
     onClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
     handleRightClick: (event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => void,
@@ -56,7 +58,7 @@ class Canvas extends React.Component<Props> {
         this.canvasRef = React.createRef<HTMLCanvasElement>();
         this.canvas = null;
 
-        // Dan Abramov on StackOverflow: a constant element tells React to never rerender.
+        // Dan Abramov on SO: a constant element tells React to never rerender.
         this.constCanvasElement = <canvas
             id="canvas" 
             ref={this.canvasRef} 
@@ -167,7 +169,48 @@ class Canvas extends React.Component<Props> {
                     this.drawUndirectedHoverEdge(hoveringEdge);
                 }
             }
-            
+
+            // animation frame
+            if (this.props.animationFrame) {
+                // for (let vertex of this.props.animationFrame) {
+                //     this.drawVertex(vertex, 'rgba(252, 77, 61, 0.8)');
+                // }
+                let color = 'rgba(252, 77, 61, 0.8)';
+                let frame = this.props.animationFrame;
+                for (let vertex of frame.visitedVertices) {
+                    this.drawVertex(vertex, color);
+                }
+
+                color = 'rgba(134, 186, 235, 0.8)';
+                let v = this.props.animationFrame.currentVertex.getPosition();
+                this.drawCircle(
+                    v[0] * this.props.gridSize, 
+                    v[1] * this.props.gridSize,
+                    Canvas.VERTEX_RADIUS + 2, 
+                    color,
+                    false,
+                    3
+                );
+
+                // for (let edge of frame.visitedEdges) {
+                //     if (this.props.graph.getIsDirected()) {
+                //         this.drawDirectedEdge(edge, color);
+                //     } else {
+                //         this.drawUndirectedEdge(edge, color);
+                //     }
+                // }
+
+                // for (let outgoingEdge of frame.outgoingEdges) {
+                //     if (this.props.graph.getIsDirected()) {
+                //         this.drawDirectedEdge(outgoingEdge, color);
+                //     } else {
+                //         this.drawUndirectedEdge(outgoingEdge, color);
+                //     }
+                // }
+            }
+
+            // weights 
+
             if (this.props.graph.getShowWeights()) {
                 for (let edge of edges) {
                     this.drawEdgeWeight(edge);
@@ -220,7 +263,7 @@ class Canvas extends React.Component<Props> {
         }
     }
 
-    drawCircle(x: number, y: number, r: number, color: string, fill = true): void {
+    drawCircle(x: number, y: number, r: number, color: string, fill = true, lineWidth?: number): void {
         
         this.context.save();
         this.context.beginPath();
@@ -230,6 +273,9 @@ class Canvas extends React.Component<Props> {
             this.context.fillStyle = color;
             this.context.fill();
         } else {
+            if (lineWidth) {
+                this.context.lineWidth = lineWidth;
+            }
             this.context.strokeStyle = color;
             this.context.stroke();
         }
@@ -304,12 +350,12 @@ class Canvas extends React.Component<Props> {
         this.context.restore();
     }
 
-    drawUndirectedHoverEdge(e: Edge<any>): void {   // use drawUndirectedEdge with specific color. This is embarassing.
+    drawUndirectedHoverEdge(e: Edge<any>): void {
         let color = 'rgba(255, 255, 255, 0.3)';
         this.drawUndirectedEdge(e, color);
     }
 
-    drawDirectedEdge(e: Edge<any>, color?: string): void {      // extract drawArrow and drawWeight;
+    drawDirectedEdge(e: Edge<any>, color?: string): void {
         if (color) {
             this.drawUndirectedEdge(e, color);
             this.drawEdgeArrow(e, color);

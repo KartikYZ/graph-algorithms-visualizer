@@ -5,11 +5,14 @@ import Canvas from './canvas';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
 import Graph from '../graph/graph'
+import { GraphAnimationFrame } from '../graph/algorithms';
 
 interface Props {
     gridSize: number,
     nodeRadius: number,
-    graph: Graph<any>
+    graph: Graph<any>,
+    isAnimating: boolean,
+    animationFrame: GraphAnimationFrame | null;
 }
 
 interface State {
@@ -48,6 +51,10 @@ class Grid extends React.Component<Props, State> {
 
     handleClick(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
 
+        if (this.props.isAnimating) {
+            return;
+        }
+
         if (this.state.hoveringVertex) {
             if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
                 this.setState({
@@ -79,6 +86,10 @@ class Grid extends React.Component<Props, State> {
         
         event.preventDefault();
 
+        if (this.props.isAnimating) {
+            return;
+        }
+
         if (this.state.hoveringVertex) {
             if (this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
                 this.state.graph.removeVertex(this.state.hoveringVertex);
@@ -91,6 +102,11 @@ class Grid extends React.Component<Props, State> {
     }
 
     handleMouseMove(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>) {
+
+        if (this.props.isAnimating) {
+            return;
+        }
+
         // console.log(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
         let prevNearestVertexInPixels = this.gridState.nearestVertexInPixels;   // keek track of Vertex object instead of tuple.
         this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
@@ -133,9 +149,9 @@ class Grid extends React.Component<Props, State> {
           hoveringVertex={this.state.hoveringVertex}
           hoveringEdge={this.state.hoveringEdge}
           currentVertex={this.state.currentVertex}
-        //   VertexSet={this.state.VertexSet}
-        //   EdgeSet={this.state.EdgeSet}
           graph={this.state.graph}
+          animationFrame={this.props.animationFrame}
+
           onClick={(event) => this.handleClick(event)}
           handleRightClick={(event) => this.handleRightClick(event)}
           onMouseMove={(event) => this.handleMouseMove(event)}
