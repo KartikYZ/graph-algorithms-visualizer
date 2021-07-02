@@ -1,71 +1,42 @@
-import { Hashable } from "./hashable";
+import { Hashable } from './hashable'
+import HashMap from './hashMap';
 
-export default class HashSet<T extends Hashable> {  // implemented as a list for now.
-
-    private set: T[];
-    private size: number;
-
+/**
+ * HashSet based on the Java Implementation of the same
+ */
+export default class HashSet<E extends Hashable> {
+    private static readonly PRESENT: Object = {};
+    private map: HashMap<E, Object>;
+    
     constructor() {
-        this.set = new Array<T>();
-        this.size = 0;
+        this.map = new HashMap();
     }
 
-    add(obj: T): void {
-        this.set.push(obj);
-        this.size++;
+    public add(data: E): void {
+        this.map.put(data, HashSet.PRESENT);
     }
 
-    remove(obj: T): void {
-        let index = -1;
-        for (let i = 0; i < this.set.length; i++) {
-            if (obj.equals(this.set[i])) {
-                index = i;
-                break;
-            }
-        }
-        this.set.splice(index, 1);
-        this.size--;
-    } 
-
-    contains(obj: T): boolean {
-        for (let i = 0; i < this.set.length; i++) {
-            if (obj.equals(this.set[i])) {
-                return true;
-            }
-        }
-        return false;
+    public remove(data: E) {
+      return this.map.remove(data);
     }
 
-    getSet(): T[] {     // replace with an iterator.
-        return this.set;
+    public contains(data: E): boolean {
+        return this.map.containsKey(data);
+    }
+
+    public getSet(): E[] {
+        return this.map.keySet();
     }
 
     getSize(): number {
-        return this.size
+        return this.map.getSize();
     }
 
     clear(): void {
-        this.set = [];
-        this.size = 0;
+        this.map = new HashMap();
     }
 
     toString(): string {
-        return '';
-    }
-
-    equals(obj: Object | null): boolean {
-        if (!(obj instanceof HashSet) || obj == null) {
-            return false;
-        } else if (this.size !== obj.size) {
-            return false;
-        }
-
-        for (let i = 0; i < this.size; i++) {
-            if (!this.set[i].equals(obj.set[i])) {
-                return false;
-            }
-        }
-
-        return true;
+        return this.getSet().toString();
     }
 }

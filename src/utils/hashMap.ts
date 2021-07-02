@@ -1,9 +1,8 @@
-import { Hashable, Equatable } from "./hashable";
-import HashSet from "./hashSet";
+import { Hashable } from "./hashable";
 
 // TODO: See deductions and rectify!
 
-export default class HashMap<K extends Hashable, V extends Equatable> {
+export default class HashMap<K extends Hashable, V> {
 
     private table: (MapEntry<K, V> | null)[];
     private size: number;
@@ -120,20 +119,23 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
         return false;
     }
 
-    public keySet(): HashSet<K> {
+    public keySet(): K[] {
+    // public keySet(): HashSet<K> {
         
-        let keys = new HashSet<K>();
+        // let keys = new HashSet<K>();
+        let keys: K[] = [];
         for (let entry of this.table) {
             if (entry) {
                 let current: MapEntry<K, V> | null = entry;
                 while (current != null) {
-                    keys.add(current.getKey());
+                    keys.push(current.getKey());
                     current = current.getNext();
                 }
             }
 
             // break on keys.size() == size
-            if (keys.getSize() === this.size) {
+            // if (keys.getSize() === this.size) {
+            if (keys.length === this.size) {
                 break;      // prevents traversal of additional null values in table base array.
             }
         }
@@ -213,7 +215,7 @@ export default class HashMap<K extends Hashable, V extends Equatable> {
 }
 
 
-class MapEntry<K extends Hashable, V extends Equatable> {
+class MapEntry<K extends Hashable, V> {
 
     private key: K;
     private value: V;
@@ -262,7 +264,7 @@ class MapEntry<K extends Hashable, V extends Equatable> {
 
     public toString(): string {
         let key: string = this.key.toString();
-        let value: string = this.value.toString();
+        let value: V = this.value;
         return `(${key}, ${value})`;
     }
 
