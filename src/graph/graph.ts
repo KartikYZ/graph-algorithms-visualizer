@@ -5,7 +5,7 @@ import HashMap from "../utils/hashMap";
 import { Equatable } from "../utils/hashable";
 
 /**
- * Adjacency Map (modified) Implementation of Goodrich, Tamassia, Goldwassser's Graph ADT. (Data Structures and Algorithms in Java)
+ * Adjacency Map (modified) Implementation of Goodrich, Tamassia, Goldwasser's Graph ADT. (Data Structures and Algorithms in Java)
  */ 
 export default class Graph<T> {
     
