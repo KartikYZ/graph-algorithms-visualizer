@@ -112,13 +112,40 @@ class Canvas extends React.Component<Props> {
                 currentVertex, 
                 graph } = this.props;
 
+            let isDirected = graph.getIsDirected();
+            let showPositions = graph.getShowPositions();
             let vertices = graph.vertices();
             let edges = graph.edges();
+
+            // edge set
+            if (isDirected) {
+                for (let edge of edges) {
+                    this.drawDirectedEdge(edge, Canvas.COLORS.directed_edge_color, ctx);
+                }
+            } else {
+                for (let edge of edges) {
+                    this.drawUndirectedEdge(edge, Canvas.COLORS.undirected_edge_color, ctx);
+                }
+            }     
+            
+            // hover edge
+            if (hoveringEdge) {
+                if (isDirected) {
+                    this.drawDirectedHoverEdge(hoveringEdge, ctx);
+                } else {
+                    this.drawUndirectedHoverEdge(hoveringEdge, ctx);
+                }
+            }
+
+            // animation frame
+            if (this.props.animationFrame) {
+                this.drawFrame(this.props.animationFrame, ctx);
+            }
 
             // hover vertex
             if (hoveringVertex) {
                 this.drawHoverVertex(hoveringVertex, ctx);
-                if (this.props.graph.getShowPositions()) {
+                if (showPositions) {
                     this.drawVertexPosition(hoveringVertex, ctx);
                 }
             }
@@ -141,32 +168,6 @@ class Canvas extends React.Component<Props> {
                 //     this.drawVertexPosition(currentVertex);
                 // }
                 // how about an outline?
-            }
-
-            // edge set
-            if (this.props.graph.getIsDirected()) {     // todo: call getter once per update
-                for (let edge of edges) {
-                    this.drawDirectedEdge(edge, Canvas.COLORS.directed_edge_color, ctx);
-                }
-            } else {
-                for (let edge of edges) {
-                    this.drawUndirectedEdge(edge, Canvas.COLORS.undirected_edge_color, ctx);
-                }
-            }     
-            
-            // hover edge
-            if (hoveringEdge) {
-                // this.drawUndirectedHoverEdge(this.props.hoveringEdge);
-                if (this.props.graph.getIsDirected()) {
-                    this.drawDirectedHoverEdge(hoveringEdge, ctx);
-                } else {
-                    this.drawUndirectedHoverEdge(hoveringEdge, ctx);
-                }
-            }
-
-            // animation frame
-            if (this.props.animationFrame) {
-                this.drawFrame(this.props.animationFrame, ctx);
             }
         
             // weights 

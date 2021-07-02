@@ -27,7 +27,11 @@ export function iterativeDepthFirstSearch(graph: Graph<any>, startVertex: Vertex
 
     while (!stack.isEmpty()) {
         let u = stack.pop();
+
+        // animation.addFrame({ outlineVertices: [u], redVertices: visited.getSet(), redEdges: discovery.values() })
         visited.add(u);
+        // animation.addFrame({ outlineVertices: [u], redVertices: visited.getSet(), redEdges: discovery.values() })
+
         for (let edge of graph.outgoingEdges(u)) {
             let v: Vertex<any> = graph.opposite(u, edge);
             if (!visited.contains(v)) {
@@ -35,7 +39,6 @@ export function iterativeDepthFirstSearch(graph: Graph<any>, startVertex: Vertex
                 stack.push(v);
             }
         }
-        animation.addFrame({ outlineVertices: visited.getSet() })
     }
     
     return animation;
@@ -63,22 +66,42 @@ export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>):
     return animation;
 }
 
-export function recursiveDepthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): Vertex<any>[] {
+export function recursiveDepthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
+    let animation = new AnimationBuilder();
     let visited = new HashSet<Vertex<any>>();
     let discovery = new HashMap<Vertex<any>, Edge<any>>();
-    dfsHelper(graph, startVertex, visited, discovery);
-    return visited.getSet();
+    dfsHelper(graph, startVertex, visited, discovery, animation);
+    return animation;
 }
 
 function dfsHelper(graph: Graph<any>, u: Vertex<any>, 
-    visitedVertices: HashSet<Vertex<any>>, discoveryEdges: HashMap<Vertex<any>, Edge<any>>) {
+    visitedVertices: HashSet<Vertex<any>>, discoveryEdges: HashMap<Vertex<any>, Edge<any>>, animation: AnimationBuilder) {
     
     visitedVertices.add(u);
+    animation.addFrame({ 
+        outlineVertices: [u], 
+        redVertices: visitedVertices.getSet(), 
+        redEdges: discoveryEdges.values(),
+    })
+
     for (let edge of graph.outgoingEdges(u)) {
         let v: Vertex<any> = graph.opposite(u, edge);
         if (!visitedVertices.contains(v)) {
             discoveryEdges.put(v, edge);
-            dfsHelper(graph, v, visitedVertices, discoveryEdges);
+            animation.addFrame({ 
+                outlineVertices: [u], 
+                redVertices: visitedVertices.getSet(), 
+                redEdges: discoveryEdges.values(), 
+                yellowEdges: graph.outgoingEdges(u) 
+            });
+
+            dfsHelper(graph, v, visitedVertices, discoveryEdges, animation);
+            animation.addFrame({ 
+                outlineVertices: [u], 
+                redVertices: visitedVertices.getSet(), 
+                redEdges: discoveryEdges.values(), 
+            })
+
         }
     }
 }
@@ -117,12 +140,12 @@ export class AnimationBuilder {
 }
 
 export interface GraphAnimationFrame {
-    outlineVertices?: Vertex<any>[] | null
-    redVertices?: Vertex<any>[] | null
-    redEdges?: Edge<any>[] | null
-    yellowVertices?: Vertex<any>[] | null
-    yellowEdges?: Edge<any>[] | null
-    greenVertices?: Vertex<any>[] | null
+    outlineVertices?: Vertex<any>[] | null,
+    redVertices?: Vertex<any>[] | null,
+    redEdges?: Edge<any>[] | null,
+    yellowVertices?: Vertex<any>[] | null,
+    yellowEdges?: Edge<any>[] | null,
+    greenVertices?: Vertex<any>[] | null,
     greenEdges?: Edge<any>[] | null
 }
 
@@ -133,7 +156,7 @@ export interface GraphAnimationFrame {
 
 //     // mark start as visited;
 //     // animation.addFrame(visited.getSet(), startVertex, discovery.getSet());
-//     visited.add(stardtVertex);
+//     visited.add(startVertex);
 //     animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
 //     // for each of start's outgoing edges:
 //     for (let edge of graph.outgoingEdges(startVertex)) {
