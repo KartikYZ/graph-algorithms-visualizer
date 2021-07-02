@@ -406,8 +406,8 @@ class Canvas extends React.Component<Props> {
 
         const colors = {
             outV: 'rgba(57, 99, 237, 0.8)',
-            redV: 'rgba(252, 77, 61, 0.8)',
-            redE: 'rgba(252, 77, 61, 0.8)',
+            redV: 'rgba(252, 77, 61, 1.0)',
+            redE: 'rgba(252, 77, 61, 1.0)',
             yellowV: 'rgba(255, 255, 0, 0.9)',
             yellowE: 'rgba(255, 255, 0, 0.9)',
             greenV: 'rgba(57, 237, 171, 0.8)',
