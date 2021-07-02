@@ -393,9 +393,7 @@ class Canvas extends React.Component<Props> {
     }
 
     drawFrame(frame: GraphAnimationFrame, ctx: CanvasRenderingContext2D) {
-        // for (let vertex of this.props.animationFrame) {
-        //     this.drawVertex(vertex, 'rgba(252, 77, 61, 0.8)');
-        // }
+        
         const {
             outlineVertices, 
             redVertices, 
@@ -406,13 +404,13 @@ class Canvas extends React.Component<Props> {
             greenEdges } = frame;
 
         const colors = {
-            outV: 'blue',
-            redV: 'red',
+            outV: 'rgba(57, 99, 237, 0.8)',
+            redV: 'rgba(252, 77, 61, 0.8)',
             redE: 'rgba(252, 77, 61, 0.8)',
-            yellowV: 'yellow',
-            yellowE: 'yellow',
-            greenV: 'green',
-            greenE: 'green',
+            yellowV: 'rgba(255, 255, 0, 0.9)',
+            yellowE: 'rgba(255, 255, 0, 0.9)',
+            greenV: 'rgba(57, 237, 171, 0.8)',
+            greenE: 'rgba(57, 237, 171, 0.8)',
         }
 
         const { gridSize, graph } = this.props;
