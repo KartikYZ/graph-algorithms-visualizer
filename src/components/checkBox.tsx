@@ -19,10 +19,8 @@ class CheckBox extends React.Component<Props> {
             let checkBox = this.checkBoxRef.current;
             if (checkBox?.checked) {
                 this.props.onSelect(true);
-                // console.log('checked!');
             } else {
                 this.props.onSelect(false);
-                // console.log('unchecked!');
             }
             
         }

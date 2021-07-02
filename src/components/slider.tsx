@@ -11,10 +11,7 @@ interface State {
     sliderValue: number
 }
 
-class Slider extends React.Component<Props, State> {    // todo: make reusable/generic
-
-    // private sliderLength: number = 7;
-    private sliderLength: number = 3;
+class Slider extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -41,14 +38,14 @@ class Slider extends React.Component<Props, State> {    // todo: make reusable/g
 
         return (
             <>
-            <input 
-                type="range" 
-                value={this.state.sliderValue} 
-                max={this.props.sliderLength - 1} 
-                onChange={(event) => this.handleOnChange(event)} 
-                name="slider"
-            />
-            <label>{this.props.label}</label>
+                <input 
+                    type="range" 
+                    value={this.state.sliderValue} 
+                    max={this.props.sliderLength - 1} 
+                    onChange={(event) => this.handleOnChange(event)} 
+                    name="slider"
+                />
+                <label>{this.props.label}</label>
             </>
         );
 
