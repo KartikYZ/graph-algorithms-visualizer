@@ -7,6 +7,7 @@ import Graph from './graph/graph';
 import { depthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame } from './graph/algorithms';
 import Vertex from './graph/vertex';
 import Edge from './graph/edge';
+import { getRandomBoolean, getRandomInt } from './utils/rng';
 
 interface Props {
 
@@ -81,6 +82,33 @@ class App extends React.Component<Props, State> {
     }
 
     onGenerateRandom() {
+        let gridSize = this.gridSizeValues[this.state.gridSize];    // todo: state holds gridSize rather than index
+        let hdivs: number = 1600 / gridSize;
+        let vdivs: number = 800 / gridSize;
+
+        this.state.graph.clear();
+
+        let xstep = [1, 2, 3, 4][getRandomInt(0, 3)];
+        let ystep = [1, 2, 3, 4][getRandomInt(0, 3)];
+
+        for (let y = 1; y < vdivs; y += ystep) {
+            for (let x = 1; x < hdivs; x += xstep) {
+                if (getRandomBoolean() && getRandomBoolean()) {
+                    this.state.graph.insertVertex(new Vertex([x, y]));
+                }
+                
+            }
+        }
+
+        for (let u of this.state.graph.vertices()) {
+            for (let v of this.state.graph.vertices()) {
+                if (getRandomBoolean() && getRandomBoolean() && getRandomBoolean() && !u.equals(v)) {
+                    this.state.graph.insertEdge(new Edge(u, v));
+                }
+            }
+        }
+
+        this.setState({});
 
     }
 
