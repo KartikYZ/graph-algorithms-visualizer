@@ -1,50 +1,101 @@
 import HashSet from "../utils/hashSet";
-// import HashMap from "../utils/hashMap";
+import Stack from "../utils/stack";
 import Queue from "../utils/queue";
 import Graph from "./graph";
 import Vertex from "./vertex";
 import Edge from "./edge";
+import HashMap from "../utils/hashMap";
 
 export function depthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
     let visited = new HashSet<Vertex<any>>();
-    let discovery = new HashSet<Edge<any>>();
+    let discovery = new HashMap<Vertex<any>, Edge<any>>();
     let animation = new AnimationBuilder();
 
-    dfsHelper(graph, startVertex, visited, discovery, animation);
+    dfsHelper(graph, startVertex, visited, discovery);
     // return visited.getSet();
     return animation;
 }
 
-function dfsHelper(graph: Graph<any>, startVertex: Vertex<any>, 
-    visited: HashSet<Vertex<any>>, discovery: HashSet<Edge<any>>, animation: AnimationBuilder): void {
-
-    // TODO: record discovery edges.
-
-    // mark start as visited;
-    // animation.addFrame(visited.getSet(), startVertex, discovery.getSet());
-    visited.add(startVertex);
-    animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
-    // for each of start's outgoing edges:
-    for (let edge of graph.outgoingEdges(startVertex)) {
-        // if (other endpoint is not visited):
-        let opposite = graph.opposite(startVertex, edge);
-        if (!visited.contains(opposite)) {
-            // depthFirstSearch(other endpoint of edge);
-            discovery.add(edge);
-            animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), graph.outgoingEdges(startVertex));
-            // display outgoing edges.
-            // set explorationEdge(edge)
-            // animation.addFrame(visited.getSet(), discoveryEdges.getSet(), graph.outgoingEdges(startVertex));
-            dfsHelper(graph, opposite, visited, discovery, animation);
-            animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
+function dfsHelper(graph: Graph<any>, u: Vertex<any>, 
+    visitedVertices: HashSet<Vertex<any>>, discoveryEdges: HashMap<Vertex<any>, Edge<any>>) {
+    
+    visitedVertices.add(u);
+    for (let edge of graph.outgoingEdges(u)) {
+        let v: Vertex<any> = graph.opposite(u, edge);
+        if (!visitedVertices.contains(v)) {
+            discoveryEdges.put(v, edge);
+            dfsHelper(graph, v, visitedVertices, discoveryEdges);
         }
-    }  
+    }
 }
+
+export function test(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
+    let visited = new HashSet<Vertex<any>>();
+    let animation = new AnimationBuilder();
+    
+    for (let v of graph.vertices()) {
+        visited.add(v);
+        animation.addFrame({ redVertices: visited.getSet() })
+    }
+
+    return animation;
+}
+
+export function iterativeDFS(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
+    let visited = new HashSet<Vertex<any>>();
+    let discovery = new HashMap<Vertex<any>, Edge<any>>();
+    let animation = new AnimationBuilder();
+    let stack = new Stack<Vertex<any>>();
+
+    stack.push(startVertex);
+
+    while (!stack.isEmpty()) {
+        let u = stack.pop();
+        visited.add(u);
+        for (let edge of graph.outgoingEdges(u)) {
+            let v: Vertex<any> = graph.opposite(u, edge);
+            if (!visited.contains(v)) {
+                discovery.put(v, edge);
+                stack.push(v);
+            }
+        }
+        animation.addFrame({ outlineVertices: visited.getSet() })
+    }
+    
+    return animation;
+}
+
+// function dfsHelper(graph: Graph<any>, startVertex: Vertex<any>, 
+//     visited: HashSet<Vertex<any>>, discovery: HashSet<Edge<any>>, animation: AnimationBuilder): void {
+
+//     // TODO: record discovery edges.
+
+//     // mark start as visited;
+//     // animation.addFrame(visited.getSet(), startVertex, discovery.getSet());
+//     visited.add(stardtVertex);
+//     animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
+//     // for each of start's outgoing edges:
+//     for (let edge of graph.outgoingEdges(startVertex)) {
+//         // if (other endpoint is not visited):
+//         let opposite = graph.opposite(startVertex, edge);
+//         if (!visited.contains(opposite)) {
+//             // depthFirstSearch(other endpoint of edge);
+//             discovery.add(edge);
+//             animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), graph.outgoingEdges(startVertex));
+//             // display outgoing edges.
+//             // set explorationEdge(edge)
+//             // animation.addFrame(visited.getSet(), discoveryEdges.getSet(), graph.outgoingEdges(startVertex));
+//             dfsHelper(graph, opposite, visited, discovery, animation);
+//             animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
+//         }
+//     }  
+// }
+
+
 
 export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
 
     let animation = new AnimationBuilder();
-
     let visited = new HashSet<Vertex<any>>();
     let queue = new Queue<Vertex<any>>();
     
@@ -52,13 +103,8 @@ export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>):
     
     while (!queue.isEmpty()) {
         let currentVertex = queue.dequeue();
-        // animation.addFrame(visited.getSet(), currentVertex)
-
         if (!visited.contains(currentVertex)) {
-            // animation.addFrame(visited.getSet(), currentVertex);
             visited.add(currentVertex);
-            // animation.addFrame(visited.getSet(), currentVertex);
-
             for (let edge of graph.outgoingEdges(currentVertex)) {
                 let opposite = graph.opposite(currentVertex, edge);
                 queue.enqueue(opposite);
@@ -72,99 +118,48 @@ export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>):
 
 export class AnimationBuilder {
     private frames: GraphAnimationFrame[];
-    // private discoveryEdges: HashMap<Vertex<any>, Edge<any>>;
 
     constructor() {
         this.frames = [];
-        // this.discoveryEdges = new HashMap();
     }
 
-    // addFrame(visitedVertices: Vertex<any>[], visitedEdges: Edge<any>[], outgoingEdges: Edge<any>[]): void {
-    //     let frame: GraphAnimationFrame = {
-    //         visitedVertices: visitedVertices.splice(0, visitedVertices.length),
-    //         visitedEdges: visitedEdges.splice(0, visitedEdges.length),
-    //         outgoingEdges: outgoingEdges
-    //     }
-    //     this.frames.push(frame);
-    // }
-
-    addFrame(visitedVertices: Vertex<any>[], currentVertex: Vertex<any>, discoveryEdges: Edge<any>[], outgoingEdges: Edge<any>[] | null): void {      // use this to get a snapshot. visited, discovery, will all be part of AnimationBuilder. call this as addFrame();
-        let frame: GraphAnimationFrame = {
-            visitedVertices: visitedVertices.slice(0, visitedVertices.length),
-            currentVertex: currentVertex,
-            discoveryEdges: discoveryEdges.slice(0, discoveryEdges.length),
-            outgoingEdges: outgoingEdges
-        }
-        this.frames.push(frame);
+    public addFrame(frame: GraphAnimationFrame) {
+        this.frames.push(this.cloneFrame(frame));
     }
 
-    // only the frame gets passed on > grid > canvas.
-
-    getFrames() {
+    public getFrames(): GraphAnimationFrame[] {
         return this.frames;
     }
 
-    // getDiscoveryEdges() {
-    //     return this.discoveryEdges;
-    // }
+    private cloneArray(arr: any[] | null | undefined): any[] | null {
+        return arr ? arr.slice(0, arr.length): null;
+    }
 
+    private cloneFrame(frame: GraphAnimationFrame): GraphAnimationFrame {
+        // todo: explore ways to 'object map'
+        return {
+            outlineVertices: this.cloneArray(frame.outlineVertices),
+            redVertices: this.cloneArray(frame.redVertices),
+            redEdges: this.cloneArray(frame.redEdges),
+            yellowVertices: this.cloneArray(frame.yellowVertices),
+            yellowEdges: this.cloneArray(frame.yellowEdges),
+            greenVertices: this.cloneArray(frame.greenEdges),
+            greenEdges: this.cloneArray(frame.greenEdges)
+        }
+    }
 }
 
 export interface GraphAnimationFrame {
-    visitedVertices: Vertex<any>[]    // replace with visited subgraph.
-    currentVertex: Vertex<any>
-    discoveryEdges: Edge<any>[]
-    outgoingEdges: Edge<any>[] | null
-    // visitedEdges: Edge<any>[],
-    // outgoingEdges: Edge<any>[]
+    outlineVertices?: Vertex<any>[] | null
+    redVertices?: Vertex<any>[] | null
+    redEdges?: Edge<any>[] | null
+    yellowVertices?: Vertex<any>[] | null
+    yellowEdges?: Edge<any>[] | null
+    greenVertices?: Vertex<any>[] | null
+    greenEdges?: Edge<any>[] | null
 }
 
-
-// interface GraphAnimationFrame<T> {
-//     visitedVertices: Vertex<T>[],    // replace with visited subgraph.
-//     currentVertex: Vertex<T> | null,
-//     visitedEdges: Edge<T>[],
-//     currentOutgoingEdges: Edge<T>[],
-//     currentIncomingEdges: Edge<T>[]
-// }
-
-// interface Animation<T> {
-//     animationFrames: GraphAnimationFrame<T>[]
-// }
-
-// interface DFSAnimation<T> extends Animation<T> {
-//     startVertex: Vertex<T>
-// }
-
-// interface placeHolderFrame<T> {
-//     outgoingEdges: Edge<T>[]
-// }
-
-// class GraphAnimationFrame<T> {
-//     visitedVertices: Vertex<T>[];
-//     currentVertex: Vertex<T> | null;
-//     visitedEdges: Edge<T>[];
-//     currentOutgoingEdges: Edge<T>[];
-//     currentIncomingEdges: Edge<T>[];
-
-//     constructor() {
-//         this.visitedVertices = [];
-//         this.currentVertex = null;
-//         this.visitedEdges = [];
-//         this.currentOutgoingEdges = [];
-//         this.currentIncomingEdges = [];
-//     }
-
-// }
-
-// class GraphAnimationBuilder {
-
-// }
-
 /*
-
-There is no need to clone anything! The graph is immutable throughout the animation!
-
 One frame of DFS:
     actual graph: taken care of by Canvas ComponentDidUpdate
 

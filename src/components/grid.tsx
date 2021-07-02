@@ -106,7 +106,6 @@ class Grid extends React.Component<Props, State> {
             return;
         }
 
-        // console.log(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
         let prevNearestVertexInPixels = this.gridState.nearestVertexInPixels;   // keek track of Vertex object instead of tuple.
         this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
 
@@ -143,7 +142,7 @@ class Grid extends React.Component<Props, State> {
 
     render() {
         return (<Canvas 
-          gridSize={this.props.gridSize}    // alternative: {...this.props}
+          gridSize={this.props.gridSize}
           nodeRadius={this.props.nodeRadius}
           hoveringVertex={this.state.hoveringVertex}
           hoveringEdge={this.state.hoveringEdge}
@@ -202,9 +201,8 @@ class Grid extends React.Component<Props, State> {
 
     inVertexRadius(cursor: [number, number]): boolean {
         let nearestVertex: [number, number] = this.nearestVertexInPixels(cursor);
-        // this.gridState.nearestVertexInPixels = nearestVertex;
         if (nearestVertex[0] > 0 && nearestVertex[0] < Canvas.WIDTH && nearestVertex[1] > 0 && nearestVertex[1] < Canvas.HEIGHT) {
-            return this.euclideanDist(cursor, nearestVertex) < Canvas.VERTEX_RADIUS; // and with conditional to assign isHovering directly here. This will cause redundant renders.
+            return this.euclideanDist(cursor, nearestVertex) < Canvas.VERTEX_RADIUS;
         }
         return false;
     }

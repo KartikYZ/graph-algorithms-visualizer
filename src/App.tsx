@@ -4,7 +4,7 @@ import './App.css';
 import Toolbar from './components/toolbar';
 import Grid from './components/grid';
 import Graph from './graph/graph';
-import { depthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame } from './graph/algorithms';
+import { iterativeDFS, depthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame, test } from './graph/algorithms';
 import Vertex from './graph/vertex';
 import Edge from './graph/edge';
 import { getRandomBoolean, getRandomInt } from './utils/rng';
@@ -48,7 +48,7 @@ class App extends React.Component<Props, State> {
         this.onStart = this.onStart.bind(this);
 
         this.algorithms = {
-            'dfs': depthFirstSearch,
+            'dfs': iterativeDFS,
             'bfs': breadthFirstSearch
         }
 
@@ -163,7 +163,10 @@ class App extends React.Component<Props, State> {
 
         this.setState({isAnimating: true});
 
+        console.log('started');
         let frames = this.algorithms[this.state.algorithm](this.state.graph, this.state.graph.vertices()[0]).getFrames();
+        console.log('stopped');
+        console.log(frames);
 
         for (let i = 0; i < frames.length; i++) {
             setTimeout(() => {
