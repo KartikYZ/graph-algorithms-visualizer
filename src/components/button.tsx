@@ -1,4 +1,5 @@
 import React from "react";
+import './styles.css'
 
 interface Props {
     label: string,
@@ -29,8 +30,8 @@ class Button extends React.Component<Props, State> {
             padding: '4px',
         }
         return (
-            <div style={styles} onClick={() => this.props.onClick()}>
-                <p style={{padding: '2px 5px', backgroundColor: '#222222'}}> {this.props.label} </p>
+            <div className="button" style={styles} onClick={() => this.props.onClick()}>
+                <p className="button" style={{padding: '2px 5px', backgroundColor: '#222222'}}> {this.props.label} </p>
             </div>
         );
     }

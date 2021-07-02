@@ -16,4 +16,8 @@ canvas {
     background:rgba(190, 190, 190, 1); /* todo */
     cursor: pointer; /* Cursor on hover */
 }
+
+.button:hover {
+    cursor: pointer;
+}
   
