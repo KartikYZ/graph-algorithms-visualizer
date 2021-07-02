@@ -31,7 +31,6 @@ class Canvas extends React.Component<Props> {
 
     private canvasRef: React.RefObject<HTMLCanvasElement>;
     private canvas: HTMLCanvasElement | null;
-    private ctx: CanvasRenderingContext2D | null;
     private constCanvasElement: any;
     
     public static VERTEX_RADIUS: number = 10;
@@ -60,7 +59,6 @@ class Canvas extends React.Component<Props> {
 
         this.canvasRef = React.createRef<HTMLCanvasElement>();
         this.canvas = null;
-        this.ctx = null;
 
         // Dan Abramov on SO: a constant element tells React to never rerender.
         this.constCanvasElement = <canvas
