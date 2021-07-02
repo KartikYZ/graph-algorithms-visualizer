@@ -6,42 +6,18 @@ import Vertex from "./vertex";
 import Edge from "./edge";
 import HashMap from "../utils/hashMap";
 
-export function depthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
-    let visited = new HashSet<Vertex<any>>();
-    let discovery = new HashMap<Vertex<any>, Edge<any>>();
-    let animation = new AnimationBuilder();
+/*
+One frame of DFS:
+    actual graph: taken care of by Canvas ComponentDidUpdate
 
-    dfsHelper(graph, startVertex, visited, discovery);
-    // return visited.getSet();
-    return animation;
-}
+    start vertex: default is first inserted vertex, (todo:) can be changed through toolbar
+    current vertex: the one dfs is called recursively on
+    outgoing edges from current vertex: adjMap
+    visited vertices: maintain a collection
+    discovery edges: maintain a collection
 
-function dfsHelper(graph: Graph<any>, u: Vertex<any>, 
-    visitedVertices: HashSet<Vertex<any>>, discoveryEdges: HashMap<Vertex<any>, Edge<any>>) {
-    
-    visitedVertices.add(u);
-    for (let edge of graph.outgoingEdges(u)) {
-        let v: Vertex<any> = graph.opposite(u, edge);
-        if (!visitedVertices.contains(v)) {
-            discoveryEdges.put(v, edge);
-            dfsHelper(graph, v, visitedVertices, discoveryEdges);
-        }
-    }
-}
-
-export function test(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
-    let visited = new HashSet<Vertex<any>>();
-    let animation = new AnimationBuilder();
-    
-    for (let v of graph.vertices()) {
-        visited.add(v);
-        animation.addFrame({ redVertices: visited.getSet() })
-    }
-
-    return animation;
-}
-
-export function iterativeDFS(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
+*/
+export function iterativeDepthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
     let visited = new HashSet<Vertex<any>>();
     let discovery = new HashMap<Vertex<any>, Edge<any>>();
     let animation = new AnimationBuilder();
@@ -65,34 +41,6 @@ export function iterativeDFS(graph: Graph<any>, startVertex: Vertex<any>): Anima
     return animation;
 }
 
-// function dfsHelper(graph: Graph<any>, startVertex: Vertex<any>, 
-//     visited: HashSet<Vertex<any>>, discovery: HashSet<Edge<any>>, animation: AnimationBuilder): void {
-
-//     // TODO: record discovery edges.
-
-//     // mark start as visited;
-//     // animation.addFrame(visited.getSet(), startVertex, discovery.getSet());
-//     visited.add(stardtVertex);
-//     animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
-//     // for each of start's outgoing edges:
-//     for (let edge of graph.outgoingEdges(startVertex)) {
-//         // if (other endpoint is not visited):
-//         let opposite = graph.opposite(startVertex, edge);
-//         if (!visited.contains(opposite)) {
-//             // depthFirstSearch(other endpoint of edge);
-//             discovery.add(edge);
-//             animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), graph.outgoingEdges(startVertex));
-//             // display outgoing edges.
-//             // set explorationEdge(edge)
-//             // animation.addFrame(visited.getSet(), discoveryEdges.getSet(), graph.outgoingEdges(startVertex));
-//             dfsHelper(graph, opposite, visited, discovery, animation);
-//             animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
-//         }
-//     }  
-// }
-
-
-
 export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
 
     let animation = new AnimationBuilder();
@@ -112,8 +60,27 @@ export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>):
         }
     }
 
-    // return visited.getSet();
     return animation;
+}
+
+export function recursiveDepthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): Vertex<any>[] {
+    let visited = new HashSet<Vertex<any>>();
+    let discovery = new HashMap<Vertex<any>, Edge<any>>();
+    dfsHelper(graph, startVertex, visited, discovery);
+    return visited.getSet();
+}
+
+function dfsHelper(graph: Graph<any>, u: Vertex<any>, 
+    visitedVertices: HashSet<Vertex<any>>, discoveryEdges: HashMap<Vertex<any>, Edge<any>>) {
+    
+    visitedVertices.add(u);
+    for (let edge of graph.outgoingEdges(u)) {
+        let v: Vertex<any> = graph.opposite(u, edge);
+        if (!visitedVertices.contains(v)) {
+            discoveryEdges.put(v, edge);
+            dfsHelper(graph, v, visitedVertices, discoveryEdges);
+        }
+    }
 }
 
 export class AnimationBuilder {
@@ -159,14 +126,28 @@ export interface GraphAnimationFrame {
     greenEdges?: Edge<any>[] | null
 }
 
-/*
-One frame of DFS:
-    actual graph: taken care of by Canvas ComponentDidUpdate
+// function dfsHelper(graph: Graph<any>, startVertex: Vertex<any>, 
+//     visited: HashSet<Vertex<any>>, discovery: HashSet<Edge<any>>, animation: AnimationBuilder): void {
 
-    start vertex: default is first inserted vertex, (todo:) can be changed through toolbar
-    current vertex: the one dfs is called recursively on
-    outgoing edges from current vertex: adjMap
-    visited vertices: maintain a collection
-    discovery edges: maintain a collection
+//     // TODO: record discovery edges.
 
-*/
+//     // mark start as visited;
+//     // animation.addFrame(visited.getSet(), startVertex, discovery.getSet());
+//     visited.add(stardtVertex);
+//     animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
+//     // for each of start's outgoing edges:
+//     for (let edge of graph.outgoingEdges(startVertex)) {
+//         // if (other endpoint is not visited):
+//         let opposite = graph.opposite(startVertex, edge);
+//         if (!visited.contains(opposite)) {
+//             // depthFirstSearch(other endpoint of edge);
+//             discovery.add(edge);
+//             animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), graph.outgoingEdges(startVertex));
+//             // display outgoing edges.
+//             // set explorationEdge(edge)
+//             // animation.addFrame(visited.getSet(), discoveryEdges.getSet(), graph.outgoingEdges(startVertex));
+//             dfsHelper(graph, opposite, visited, discovery, animation);
+//             animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
+//         }
+//     }  
+// }

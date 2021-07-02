@@ -51,7 +51,7 @@ class Canvas extends React.Component<Props> {
         edge_hover_color: 'rgba(50, 100, 168, 0.5)',
         hover_edge_color:'rgba(255, 255, 255, 0.3)',
         directed_edge_color: 'rgba(255, 255, 255, 0.7)',
-        undirected_edge_color: 'rgba(255, 255, 255, 0.5)',
+        undirected_edge_color: 'rgba(255, 255, 255, 0.6)',
         default_edge_color: 'rgba(50, 100, 168, 1)',
     }
 

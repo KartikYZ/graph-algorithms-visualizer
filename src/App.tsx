@@ -4,7 +4,7 @@ import './App.css';
 import Toolbar from './components/toolbar';
 import Grid from './components/grid';
 import Graph from './graph/graph';
-import { iterativeDFS, depthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame, test } from './graph/algorithms';
+import { iterativeDepthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame } from './graph/algorithms';
 import Vertex from './graph/vertex';
 import Edge from './graph/edge';
 import { getRandomBoolean, getRandomInt } from './utils/rng';
@@ -48,7 +48,7 @@ class App extends React.Component<Props, State> {
         this.onStart = this.onStart.bind(this);
 
         this.algorithms = {
-            'dfs': iterativeDFS,
+            'dfs': iterativeDepthFirstSearch,
             'bfs': breadthFirstSearch
         }
 
