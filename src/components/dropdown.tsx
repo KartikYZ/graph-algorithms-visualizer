@@ -16,7 +16,7 @@ class DropDown extends React.Component<Props, State> {
         const options = this.props.options.map((option) => <option key={option} value={option}>{option}</option>);
         return (
             <div>
-                <label htmlFor="dropdown">{this.props.label}</label>
+                <label htmlFor="dropdown">{this.props.label} </label>
                 <select 
                     id="dropdown" 
                     defaultValue={this.props.options[0]}

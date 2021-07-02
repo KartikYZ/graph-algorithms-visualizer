@@ -5,3 +5,7 @@ export interface Hashable extends Equatable {
 export interface Equatable {
     equals: (obj: Object) => boolean;
 }
+
+export interface Comparable {
+    compareTo: (obj: Object) => number;
+}

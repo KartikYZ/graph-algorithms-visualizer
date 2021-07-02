@@ -8,7 +8,15 @@ import CheckBox from './checkBox'
 import DropDown from './dropdown';
 
 interface Props {
-    sliderProps: {
+    gridSizeSliderProps: {
+        label: string,
+        sliderLength: number,
+        sliderValue: number,
+        onSliderChange: (sliderValue: number) => void
+    },
+    animationSpeedSliderProps: {    // make interface
+        label: string,
+        sliderLength: number,
         sliderValue: number,
         onSliderChange: (sliderValue: number) => void
     }
@@ -21,12 +29,14 @@ interface Props {
         onSelectDirectedEdges: (selected: boolean) => void,
         onSelectShowWeights: (selected: boolean) => void,
         onSelectShowVertexPositions: (selected: boolean) => void,
+        onGenerateGrid: () => void,
+        onGenerateRandom: () => void,
         onClear: () => void,
     }
 }
 
 interface State {
-
+    
 }
 
 class Toolbar extends React.Component<Props, State> {
@@ -56,7 +66,7 @@ class Toolbar extends React.Component<Props, State> {
                     <CheckBox label='Directed Edges' onSelect={this.props.graphProps.onSelectDirectedEdges}/>
                     <CheckBox label='Show Weights' onSelect={this.props.graphProps.onSelectShowWeights}/>
                     <CheckBox label='Show Vertex Positions' onSelect={this.props.graphProps.onSelectShowVertexPositions}/>
-                    <Slider {...this.props.sliderProps} /> 
+                    <Slider {...this.props.gridSizeSliderProps} /> 
                     <Button label="Clear" onClick={this.props.graphProps.onClear} />
                 </TitledToolbarContainer>
                 <TitledToolbarContainer title="Algorithms">
@@ -65,8 +75,11 @@ class Toolbar extends React.Component<Props, State> {
                         options={this.props.startButtonProps.options} 
                         onChange={(event) => this.props.startButtonProps.onSelection(event)}
                     />
+                    <Button label="Generate Grid Graph" onClick={this.props.graphProps.onGenerateGrid} />
+                    <Button label="Generate Random Graph" onClick={this.props.graphProps.onGenerateRandom} />
                 </TitledToolbarContainer>
                 <TitledToolbarContainer title="Animation">
+                    <Slider {...this.props.animationSpeedSliderProps} /> 
                     <Button label="Start" onClick={this.props.startButtonProps.onStart}/>
                 </TitledToolbarContainer>
             </div>

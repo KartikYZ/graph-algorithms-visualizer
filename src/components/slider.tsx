@@ -1,6 +1,8 @@
 import React from 'react';
 
 interface Props {
+    label: string,
+    sliderLength: number
     sliderValue: number,
     onSliderChange: (sliderValue: number) => void;
 }
@@ -42,11 +44,11 @@ class Slider extends React.Component<Props, State> {    // todo: make reusable/g
             <input 
                 type="range" 
                 value={this.state.sliderValue} 
-                max={this.sliderLength - 1} 
+                max={this.props.sliderLength - 1} 
                 onChange={(event) => this.handleOnChange(event)} 
                 name="slider"
             />
-            <label>Grid Size</label>
+            <label>{this.props.label}</label>
             </>
         );
 

@@ -174,8 +174,35 @@ class Canvas extends React.Component<Props> {
                 // for (let vertex of this.props.animationFrame) {
                 //     this.drawVertex(vertex, 'rgba(252, 77, 61, 0.8)');
                 // }
-                let color = 'rgba(252, 77, 61, 0.8)';
+                
                 let frame = this.props.animationFrame;
+                let color = 'rgba(252, 77, 61, 0.8)';
+                
+                if (this.props.graph.getIsDirected()) {
+                    for (let edge of frame.discoveryEdges) {
+                        this.drawDirectedEdge(edge, color);
+                    }
+                    // pass set so as to only highlight remaining outgoing edges.
+                    if (frame.outgoingEdges) {
+                        for (let edge of frame.outgoingEdges) {
+                            this.drawDirectedEdge(edge, 'rgba(255, 255, 0, 0.7)');
+                        }
+                    }
+                    
+                } else {
+                    for (let edge of frame.discoveryEdges) {
+                        this.drawUndirectedEdge(edge, color);
+                    }
+
+                    if (frame.outgoingEdges) {
+                        for (let edge of frame.outgoingEdges) {
+                            this.drawUndirectedEdge(edge, 'rgba(255, 255, 0, 0.7)');
+                        }
+                    }
+
+                }
+
+                
                 for (let vertex of frame.visitedVertices) {
                     this.drawVertex(vertex, color);
                 }
@@ -190,6 +217,8 @@ class Canvas extends React.Component<Props> {
                     false,
                     3
                 );
+
+                
 
                 // for (let edge of frame.visitedEdges) {
                 //     if (this.props.graph.getIsDirected()) {
