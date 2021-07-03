@@ -82,6 +82,19 @@ class Toolbar extends React.Component<Props, State> {
                     <Slider {...this.props.animationSpeedSliderProps} /> 
                     <Button label="Start" onClick={this.props.startButtonProps.onStart}/>
                 </TitledToolbarContainer>
+                <TitledToolbarContainer title="Custom graphs">
+                    <p>
+                        <h4>Addition</h4>
+                            1. Click on nodes to start drawing. Click on the currently active source node to exit draw mode. <br />
+                            2. Click on nodes other than the currently active source node to draw edges. <br />
+                            3. Use the toolbar to switch between directed/undirected/weighted/unweighted edges. <br />
+                        <h4>Removal</h4>
+                            1. Right click on vertex to remove it (and its incident edges, if any). <br />
+                            2. To remove an undirected edge, draw over/retrace the edge. <br />
+                            3. To remove a directed edge, draw/retrace the edge from its tail to the arrowhead. <br />
+                    </p>
+                </TitledToolbarContainer>
+                
             </div>
         );
     }
