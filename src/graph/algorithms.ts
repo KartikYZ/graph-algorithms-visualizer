@@ -1,53 +1,16 @@
 import HashSet from "../utils/hashSet";
-import Stack from "../utils/stack";
+// import Stack from "../utils/stack";
 import Queue from "../utils/queue";
 import Graph from "./graph";
 import Vertex from "./vertex";
 import Edge from "./edge";
 import HashMap from "../utils/hashMap";
 
-/*
-One frame of DFS:
-    actual graph: taken care of by Canvas ComponentDidUpdate
-
-    start vertex: default is first inserted vertex, (todo:) can be changed through toolbar
-    current vertex: the one dfs is called recursively on
-    outgoing edges from current vertex: adjMap
-    visited vertices: maintain a collection
-    discovery edges: maintain a collection
-
-*/
-export function iterativeDepthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
-    let visited = new HashSet<Vertex<any>>();
-    let discovery = new HashMap<Vertex<any>, Edge<any>>();
-    let animation = new AnimationBuilder();
-    let stack = new Stack<Vertex<any>>();
-
-    stack.push(startVertex);
-
-    while (!stack.isEmpty()) {
-        let u = stack.pop();
-
-        // animation.addFrame({ outlineVertices: [u], redVertices: visited.getSet(), redEdges: discovery.values() })
-        visited.add(u);
-        // animation.addFrame({ outlineVertices: [u], redVertices: visited.getSet(), redEdges: discovery.values() })
-
-        for (let edge of graph.outgoingEdges(u)) {
-            let v: Vertex<any> = graph.opposite(u, edge);
-            if (!visited.contains(v)) {
-                discovery.put(v, edge);
-                stack.push(v);
-            }
-        }
-    }
-    
-    return animation;
-}
-
 export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
 
     let animation = new AnimationBuilder();
     let visited = new HashSet<Vertex<any>>();
+    let discovery: Edge<any>[] = [];
     let queue = new Queue<Vertex<any>>();
     
     queue.enqueue(startVertex);
@@ -55,13 +18,26 @@ export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>):
     while (!queue.isEmpty()) {
         let currentVertex = queue.dequeue();
         if (!visited.contains(currentVertex)) {
+            
+            animation.addFrame({ outlineVertices: [currentVertex], redVertices: visited.getSet(), redEdges: discovery });
             visited.add(currentVertex);
+            
+            animation.addFrame({ outlineVertices: [currentVertex], redVertices: visited.getSet(), redEdges: discovery });
+            animation.addFrame({ 
+                outlineVertices: [currentVertex], 
+                redVertices: visited.getSet(), 
+                redEdges: discovery,
+                yellowEdges: graph.outgoingEdges(currentVertex), 
+            });
+
             for (let edge of graph.outgoingEdges(currentVertex)) {
                 let opposite = graph.opposite(currentVertex, edge);
+                discovery.push(...graph.outgoingEdges(currentVertex));
                 queue.enqueue(opposite);
             }
         }
     }
+    animation.addFrame({ redVertices: visited.getSet(), redEdges: discovery });
 
     return animation;
 }
@@ -173,4 +149,42 @@ export interface GraphAnimationFrame {
 //             animation.addFrame(visited.getSet(), startVertex, discovery.getSet(), null);
 //         }
 //     }  
+// }
+
+/*
+One frame of DFS:
+    actual graph: taken care of by Canvas ComponentDidUpdate
+
+    start vertex: default is first inserted vertex, (todo:) can be changed through toolbar
+    current vertex: the one dfs is called recursively on
+    outgoing edges from current vertex: adjMap
+    visited vertices: maintain a collection
+    discovery edges: maintain a collection
+
+*/
+// export function iterativeDepthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
+//     let visited = new HashSet<Vertex<any>>();
+//     let discovery = new HashMap<Vertex<any>, Edge<any>>();
+//     let animation = new AnimationBuilder();
+//     let stack = new Stack<Vertex<any>>();
+
+//     stack.push(startVertex);
+
+//     while (!stack.isEmpty()) {
+//         let u = stack.pop();
+
+//         // animation.addFrame({ outlineVertices: [u], redVertices: visited.getSet(), redEdges: discovery.values() })
+//         visited.add(u);
+//         // animation.addFrame({ outlineVertices: [u], redVertices: visited.getSet(), redEdges: discovery.values() })
+
+//         for (let edge of graph.outgoingEdges(u)) {
+//             let v: Vertex<any> = graph.opposite(u, edge);
+//             if (!visited.contains(v)) {
+//                 discovery.put(v, edge);
+//                 stack.push(v);
+//             }
+//         }
+//     }
+    
+//     return animation;
 // }
