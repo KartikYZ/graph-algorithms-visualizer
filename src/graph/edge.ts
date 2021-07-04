@@ -4,12 +4,14 @@ export default class Edge<T> {
 
     public start: Vertex<T>;
     public end: Vertex<T>;
-    
     private weight: number;
+    private color: string;
 
-    constructor(start: Vertex<T>, end: Vertex<T>, weight?: number) {
+    constructor(start: Vertex<T>, end: Vertex<T>, color: string = 'rgb(255, 255, 255, 0.8)', weight?: number) {
         this.start = start;
         this.end = end;
+        this.color = color;
+        
         if (weight) {
             this.weight = weight;
         } else {

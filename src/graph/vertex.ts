@@ -1,11 +1,13 @@
 export default class Vertex<T> {
 
     private position: [number, number];
-    private data: T | undefined; 
+    private data: T | undefined;
+    private color: string; 
 
-    constructor(position: [number, number], data?: T) {
+    constructor(position: [number, number], color: string = 'rgb(255, 255, 255, 0.8)', data?: T) {
         this.position = position;
         this.data = data;
+        this.color = color;
     }
 
     equals(v: Object | null): boolean {
