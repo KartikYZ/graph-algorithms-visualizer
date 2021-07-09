@@ -2,6 +2,11 @@
     text-align: center;
 }
 
+.subtitle {
+    font-size: 1em;
+    font-weight: bolder;
+}
+
 canvas {
     border: 1px solid rgba(190, 190, 190, 1);
     margin-top: 10px;
