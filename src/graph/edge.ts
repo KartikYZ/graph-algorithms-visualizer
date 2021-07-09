@@ -7,7 +7,7 @@ export default class Edge<T> {
     private weight: number;
     private color: string;
 
-    constructor(start: Vertex<T>, end: Vertex<T>, color: string = 'rgb(255, 255, 255, 0.8)', weight?: number) {
+    constructor(start: Vertex<T>, end: Vertex<T>, color: string, weight?: number) {
         this.start = start;
         this.end = end;
         this.color = color;
@@ -41,6 +41,14 @@ export default class Edge<T> {
 
     getWeight(): number {
         return this.weight;
+    }
+
+    getColor(): string {
+        return this.color;
+    }
+
+    setColor(color: string): void {
+        this.color = color;
     }
 
     toString(): string {

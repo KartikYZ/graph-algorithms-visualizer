@@ -7,7 +7,8 @@ import Graph from './graph/graph';
 import { recursiveDepthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame } from './graph/algorithms';
 import Vertex from './graph/vertex';
 import Edge from './graph/edge';
-import { getRandomBoolean, getRandomInt } from './utils/rng';
+import { getRandomBoolean, getRandomInt } from './utils/mathFunctions';
+import { colors } from './utils/colors';
 
 interface Props {
 
@@ -94,16 +95,15 @@ class App extends React.Component<Props, State> {
         for (let y = 1; y < vdivs; y += ystep) {
             for (let x = 1; x < hdivs; x += xstep) {
                 if (getRandomBoolean() && getRandomBoolean()) {
-                    this.state.graph.insertVertex(new Vertex([x, y]));
+                    this.state.graph.insertVertex(new Vertex([x, y], colors.graphVertex));
                 }
-                
             }
         }
 
         for (let u of this.state.graph.vertices()) {
             for (let v of this.state.graph.vertices()) {
                 if (getRandomBoolean() && getRandomBoolean() && getRandomBoolean() && !u.equals(v)) {
-                    this.state.graph.insertEdge(new Edge(u, v));
+                    this.state.graph.insertEdge(new Edge(u, v, colors.graphEdge));
                 }
             }
         }
@@ -122,11 +122,11 @@ class App extends React.Component<Props, State> {
         for (let y = 1; y < vdivs; y++) {
             for (let x = 1; x < hdivs; x++) {
                 // this.state.graph.insertVertex(new Vertex([x, y]));
-                let s = new Vertex([x, y]);
-                let r = new Vertex([x + 1, y]);
-                let d = new Vertex([x, y + 1]);
-                let right = new Edge(s, r);
-                let down = new Edge(s, d);
+                let s = new Vertex([x, y], colors.graphVertex);
+                let r = new Vertex([x + 1, y], colors.graphVertex);
+                let d = new Vertex([x, y + 1], colors.graphVertex);
+                let right = new Edge(s, r, colors.graphEdge);
+                let down = new Edge(s, d, colors.graphEdge);
                 if (x !== hdivs - 1) {
                     this.state.graph.insertEdge(right);
                 }

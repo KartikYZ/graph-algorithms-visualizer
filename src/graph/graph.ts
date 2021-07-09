@@ -93,7 +93,7 @@ export default class Graph<T> {
         this.insertEdgeHelper(e);
 
         if (!this.isDirected) {
-            this.insertEdgeHelper(new Edge(e.getEnd(), e.getStart()));
+            this.insertEdgeHelper(new Edge(e.getEnd(), e.getStart(), e.getColor()));
         }
     }
 
@@ -156,7 +156,7 @@ export default class Graph<T> {
             // remove from v.outgoing
             this.adjacencyMap.get(v).outgoing.remove(u);
             // remove from edgeSet
-            let reverseEdge = new Edge(e.getEnd(), e.getStart());
+            let reverseEdge = new Edge(e.getEnd(), e.getStart(), e.getColor());
             this.edgeSet.remove(reverseEdge);
         }
     }
@@ -180,7 +180,7 @@ export default class Graph<T> {
         if (this.isDirected) {
             // add reverse edges.
             for (let edge of this.edgeSet.getSet()) {
-                let reverseEdge = new Edge(edge.getEnd(), edge.getStart());
+                let reverseEdge = new Edge(edge.getEnd(), edge.getStart(), edge.getColor());
                 this.insertEdge(reverseEdge);
             }
         }

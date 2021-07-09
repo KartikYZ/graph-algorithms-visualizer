@@ -5,6 +5,8 @@ import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
 import Graph from '../graph/graph'
 import { GraphAnimationFrame } from '../graph/algorithms';
+import { colors } from '../utils/colors';
+import { euclideanDist } from '../utils/mathFunctions'
 
 interface Props {
     gridSize: number,
@@ -63,6 +65,7 @@ class Grid extends React.Component<Props, State> {
             } else {
                 if (this.state.hoveringEdge) {
                     if (!this.state.graph.edgeSet.contains(this.state.hoveringEdge)) {
+                        this.state.hoveringEdge.setColor(colors.graphEdge);
                         this.state.graph.insertEdge(this.state.hoveringEdge);
                     } else {
                         this.state.graph.removeEdge(this.state.hoveringEdge);
@@ -76,7 +79,8 @@ class Grid extends React.Component<Props, State> {
             }
 
             if (!this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
-                this.state.graph.insertVertex(this.state.hoveringVertex);
+                let newVertex = new Vertex(this.state.hoveringVertex.getPosition(), colors.graphVertex);
+                this.state.graph.insertVertex(newVertex);
             }
         }
     }
@@ -106,7 +110,7 @@ class Grid extends React.Component<Props, State> {
             return;
         }
 
-        let prevNearestVertexInPixels = this.gridState.nearestVertexInPixels;   // keek track of Vertex object instead of tuple.
+        let prevNearestVertexInPixels = this.gridState.nearestVertexInPixels;
         this.gridState.cursor = [event.nativeEvent.offsetX, event.nativeEvent.offsetY];
 
         if (this.nearestVertexInPixels(this.gridState.cursor)[0] !== prevNearestVertexInPixels[0] || 
@@ -114,7 +118,7 @@ class Grid extends React.Component<Props, State> {
                 this.gridState.nearestVertexInPixels = this.nearestVertexInPixels(this.gridState.cursor);
 
                 if (this.state.currentVertex) {
-                    let hoveringEdge = new Edge(this.state.currentVertex, this.PixelsToVertex(this.gridState.nearestVertexInPixels), 0);
+                    let hoveringEdge = new Edge(this.state.currentVertex, this.PixelsToVertex(this.gridState.nearestVertexInPixels, colors.hoverVertex), colors.hoverEdge);
                     this.setState({
                         hoveringEdge: hoveringEdge
                     });
@@ -125,7 +129,7 @@ class Grid extends React.Component<Props, State> {
     
             if (!this.state.hoveringVertex) {
                 this.setState({
-                    hoveringVertex: this.PixelsToVertex(this.gridState.nearestVertexInPixels)
+                    hoveringVertex: this.PixelsToVertex(this.gridState.nearestVertexInPixels, colors.hoverVertex)
                 });
             }
 
@@ -158,9 +162,9 @@ class Grid extends React.Component<Props, State> {
 
     // utility methods
 
-    PixelsToVertex(point: [number, number]): Vertex<any> {
+    PixelsToVertex(point: [number, number], color: string): Vertex<any> {
         let vertexPoint = point.map((val) => val / this.props.gridSize);
-        return new Vertex([vertexPoint[0], vertexPoint[1]]);
+        return new Vertex([vertexPoint[0], vertexPoint[1]], color);
     }
 
     /**
@@ -202,13 +206,9 @@ class Grid extends React.Component<Props, State> {
     inVertexRadius(cursor: [number, number]): boolean {
         let nearestVertex: [number, number] = this.nearestVertexInPixels(cursor);
         if (nearestVertex[0] > 0 && nearestVertex[0] < Canvas.WIDTH && nearestVertex[1] > 0 && nearestVertex[1] < Canvas.HEIGHT) {
-            return this.euclideanDist(cursor, nearestVertex) < Canvas.VERTEX_RADIUS;
+            return euclideanDist(cursor, nearestVertex) < Canvas.VERTEX_RADIUS;
         }
         return false;
-    }
-
-    euclideanDist(p1: number[], p2: number[]) {
-        return Math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2);
     }
 
 }

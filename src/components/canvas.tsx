@@ -5,9 +5,7 @@ import Graph from '../graph/graph';
 import Vertex from '../graph/vertex';
 import Edge from '../graph/edge';
 import { GraphAnimationFrame } from '../graph/algorithms';
-
-const grid_shade = 190;
-const hover_shade = 190;
+import { colors } from '../utils/colors';
 
 interface Props {
     gridSize: number,
@@ -33,26 +31,11 @@ class Canvas extends React.Component<Props> {
     private canvas: HTMLCanvasElement | null;
     private constCanvasElement: any;
     
-    public static VERTEX_RADIUS: number = 10;
+    public static readonly VERTEX_RADIUS: number = 10;
     // public static _WIDTH: number = 1280;
     // public static _HEIGHT: number = 640;
-    public static WIDTH: number = 1600;
-    public static HEIGHT: number = 800;
-
-    private static COLORS = {
-        grid_color: `rgba(${grid_shade}, ${grid_shade}, ${grid_shade})`,
-        node_hover_color: `rgba(${hover_shade}, ${hover_shade}, ${hover_shade}, 0.5)`,
-        // active_node_color: 'rgba(50, 100, 168, 0.7)',
-        active_node_color: 'rgba(255, 255, 255, 0.3)',
-        // current_node_color: 'rgba(98, 217, 131, 0.5)',
-        current_node_color: 'rgba(255, 255, 255, 0.7)',
-        inactive_node_color: `rgba(${hover_shade}, ${hover_shade}, ${hover_shade}, 0.7)`,
-        edge_hover_color: 'rgba(50, 100, 168, 0.5)',
-        hover_edge_color:'rgba(255, 255, 255, 0.3)',
-        directed_edge_color: 'rgba(255, 255, 255, 0.7)',
-        undirected_edge_color: 'rgba(255, 255, 255, 0.6)',
-        default_edge_color: 'rgba(50, 100, 168, 1)',
-    }
+    public static readonly WIDTH: number = 1600;
+    public static readonly HEIGHT: number = 800;
 
     constructor(props: Props) {
         super(props);
@@ -118,27 +101,29 @@ class Canvas extends React.Component<Props> {
             // edge set
             if (isDirected) {
                 for (let edge of edges) {
-                    this.drawDirectedEdge(edge, Canvas.COLORS.directed_edge_color, ctx);
+                    this.drawDirectedEdge(edge, ctx);
                 }
             } else {
                 for (let edge of edges) {
-                    this.drawUndirectedEdge(edge, Canvas.COLORS.undirected_edge_color, ctx);
+                    this.drawUndirectedEdge(edge, ctx);
                 }
             }     
             
             // hover edge
             if (hoveringEdge) {
                 if (isDirected) {
-                    this.drawDirectedHoverEdge(hoveringEdge, ctx);
+                    // this.drawDirectedHoverEdge(hoveringEdge, ctx);
+                    this.drawDirectedEdge(hoveringEdge, ctx);
                 } else {
-                    this.drawUndirectedHoverEdge(hoveringEdge, ctx);
+                    // this.drawUndirectedHoverEdge(hoveringEdge, ctx);
+                    this.drawUndirectedEdge(hoveringEdge, ctx);
                 }
             }
 
             // animation frame
-            if (this.props.animationFrame) {
-                this.drawFrame(this.props.animationFrame, ctx);
-            }
+            // if (this.props.animationFrame) {
+            //     this.drawFrame(this.props.animationFrame, ctx);
+            // }
 
             // hover vertex
             if (hoveringVertex) {
@@ -161,7 +146,10 @@ class Canvas extends React.Component<Props> {
 
             // current active vertex
             if (currentVertex) {
+                let old = currentVertex.getColor();
+                currentVertex.setColor(colors.currentVertex);
                 this.drawCurrentVertex(currentVertex, ctx);
+                currentVertex.setColor(old);
                 // if (this.props.graph.getShowPositions()) {
                 //     this.drawVertexPosition(currentVertex);
                 // }
@@ -179,7 +167,7 @@ class Canvas extends React.Component<Props> {
 
     render() {
         return (
-            <div className="canvas-container">
+            <div className="canvas-container" style={{height: "80vh", backgroundColor: "#444444"}}>
                 {this.constCanvasElement}
             </div>
         );
@@ -189,14 +177,12 @@ class Canvas extends React.Component<Props> {
     drawGrid(ctx: CanvasRenderingContext2D): void {
 
         const { gridSize, nodeRadius } = this.props;
-        
-        // ctx.clearRect(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
-        // ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+
         if (ctx) {
-            ctx.fillStyle = '#444444';     // make constant
-            ctx.fillRect(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
-            ctx.strokeStyle = Canvas.COLORS.grid_color;
-            ctx.fillStyle = Canvas.COLORS.inactive_node_color;
+            ctx.clearRect(0, 0, Canvas.WIDTH, Canvas.HEIGHT);
+            
+            ctx.fillStyle = colors.gridLines;
+            ctx.strokeStyle = colors.gridLines;
             
             for (let i = 1; i < Canvas.WIDTH / gridSize; i++) {   
                 for (let j = 1; j < Canvas.HEIGHT / gridSize; j++) {
@@ -244,7 +230,7 @@ class Canvas extends React.Component<Props> {
         ctx.restore();
     }
 
-    drawVertex(v: Vertex<any>, color: string, ctx: CanvasRenderingContext2D): void {
+    drawVertex(v: Vertex<any>, ctx: CanvasRenderingContext2D): void {
         
         const pos: [number, number] = v.getPosition();
         const { gridSize } = this.props;
@@ -253,22 +239,22 @@ class Canvas extends React.Component<Props> {
             pos[0] * gridSize,
             pos[1] * gridSize,
             Canvas.VERTEX_RADIUS,
-            color,
+            v.getColor(),
             true,
             ctx
         );
     }
 
     drawHoverVertex(v: Vertex<any>, ctx: CanvasRenderingContext2D) {
-        this.drawVertex(v, Canvas.COLORS.node_hover_color, ctx);
+        this.drawVertex(v, ctx);
     }
 
     drawCurrentVertex(v: Vertex<any>, ctx: CanvasRenderingContext2D) {
-        this.drawVertex(v, Canvas.COLORS.current_node_color, ctx);
+        this.drawVertex(v, ctx);
     }
 
     drawGraphVertex(v: Vertex<any>, ctx: CanvasRenderingContext2D) {
-        this.drawVertex(v, Canvas.COLORS.active_node_color, ctx);
+        this.drawVertex(v, ctx);
     }
 
     drawVertexPosition(v: Vertex<any>, ctx: CanvasRenderingContext2D) {
@@ -289,21 +275,21 @@ class Canvas extends React.Component<Props> {
         // text   (todo: extract draw text method)
         let strPos = `(${pos[0]}, ${pos[1]})`;
         ctx.font = '18px serif';
-        ctx.fillStyle = 'rgba(255, 255, 0, 0.9)';
+        ctx.fillStyle = colors.vertexPosition;
         ctx.fillText(strPos, -(ctx.measureText(strPos).width + 10), -10);
         ctx.restore();
 
         ctx.restore();
     }
 
-    drawUndirectedEdge(e: Edge<any>, color: string, ctx: CanvasRenderingContext2D): void {
+    drawUndirectedEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {
 
         let start = e.start.getPosition();
         let end = e.end.getPosition();
         const { gridSize, nodeRadius } = this.props;
 
         ctx.save();
-        ctx.strokeStyle = color;
+        ctx.strokeStyle = e.getColor();
         ctx.lineWidth = nodeRadius;
         ctx.beginPath();
         ctx.moveTo(start[0] * gridSize, start[1] * gridSize);
@@ -312,21 +298,21 @@ class Canvas extends React.Component<Props> {
         ctx.restore();
     }
 
-    drawUndirectedHoverEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {
-        // let c = 'rgba(255, 255, 255, 0.3)';
-        this.drawUndirectedEdge(e, Canvas.COLORS.hover_edge_color, ctx);
+    // drawUndirectedHoverEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {
+    //     // let c = 'rgba(255, 255, 255, 0.3)';
+    //     this.drawUndirectedEdge(e, ctx);
+    // }
+
+    drawDirectedEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {
+        this.drawUndirectedEdge(e, ctx);
+        this.drawEdgeArrow(e, ctx);
     }
 
-    drawDirectedEdge(e: Edge<any>, color: string, ctx: CanvasRenderingContext2D): void {
-        this.drawUndirectedEdge(e, color, ctx);
-        this.drawEdgeArrow(e, color, ctx);
-    }
+    // drawDirectedHoverEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {     // rectify alpha channel later.
+    //     this.drawDirectedEdge(e, ctx);
+    // }
 
-    drawDirectedHoverEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {     // rectify alpha channel later.
-        this.drawDirectedEdge(e, Canvas.COLORS.hover_edge_color, ctx);
-    }
-
-    drawEdgeArrow(e: Edge<any>, color: string, ctx: CanvasRenderingContext2D) {
+    drawEdgeArrow(e: Edge<any>, ctx: CanvasRenderingContext2D) {
         let v1 = e.start.getPosition();
         let v2 = e.end.getPosition();
 
@@ -336,11 +322,13 @@ class Canvas extends React.Component<Props> {
         
         ctx.save();
         
-        if (color) {
-            ctx.strokeStyle = ctx.fillStyle = color;
-        } else {
-            ctx.strokeStyle = ctx.fillStyle = Canvas.COLORS.current_node_color;
-        }
+        // if (color) {
+        //     ctx.strokeStyle = ctx.fillStyle = color;
+        // } else {
+        //     ctx.strokeStyle = ctx.fillStyle = Canvas.COLORS.current_node_color;
+        // }
+
+        ctx.strokeStyle = ctx.fillStyle = e.getColor();
 
         ctx.translate(
             v2[0] * gridSize - this.props.nodeRadius * Math.cos(angle),
@@ -375,129 +363,114 @@ class Canvas extends React.Component<Props> {
         
         // container
         if (round) {
-            this.drawCircle(0, 0, 15, 'rgba(255, 255, 255, 0.8)', true, ctx);
-            this.drawCircle(0, 0, 15, 'black', false, ctx);
+            this.drawCircle(0, 0, 15, colors.edgeWeightBackground, true, ctx);
+            this.drawCircle(0, 0, 15, colors.edgeWeightBorder, false, ctx);
         } else {
-            ctx.strokeStyle = 'black';
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.strokeStyle = colors.edgeWeightBorder;
+            ctx.fillStyle = colors.edgeWeightBackground;
             ctx.strokeRect(-15, -15, 30, 30);
             ctx.fillRect(-15, -15, 30, 30);
         }
 
         // weight
         ctx.font = '18px serif';
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = colors.edgeWeight;
         ctx.fillText(weight, -ctx.measureText(weight).width / 2, 6);
         ctx.restore();
     }
 
-    drawFrame(frame: GraphAnimationFrame, ctx: CanvasRenderingContext2D) {
+    // drawFrame(frame: GraphAnimationFrame, ctx: CanvasRenderingContext2D) {
         
-        const {
-            outlineVertices, 
-            redVertices, 
-            yellowVertices, 
-            greenVertices, 
-            redEdges, 
-            yellowEdges, 
-            greenEdges } = frame;
+    //     const {
+    //         outlineVertices, 
+    //         redVertices, 
+    //         yellowVertices, 
+    //         greenVertices, 
+    //         redEdges, 
+    //         yellowEdges, 
+    //         greenEdges } = frame;
 
-        const colors = {
-            outV: 'rgba(57, 99, 237, 0.8)',
-            redV: 'rgba(252, 77, 61, 1.0)',
-            redE: 'rgba(252, 77, 61, 1.0)',
-            yellowV: 'rgba(255, 255, 0, 0.9)',
-            yellowE: 'rgba(255, 255, 0, 0.9)',
-            greenV: 'rgba(57, 237, 171, 0.8)',
-            greenE: 'rgba(57, 237, 171, 0.8)',
-        }
-
-        const { gridSize, graph } = this.props;
-        const isDirected = graph.getIsDirected()
+    //     const { gridSize, graph } = this.props;
+    //     const isDirected = graph.getIsDirected()
         
-        if (isDirected) {
-            if (redEdges) {
-                for (let edge of redEdges) {
-                    this.drawDirectedEdge(edge, colors.redE, ctx);
-                }
-            }
+    //     if (isDirected) {
+    //         if (redEdges) {
+    //             for (let edge of redEdges) {
+    //                 this.drawDirectedEdge(edge, colors.redE, ctx);
+    //             }
+    //         }
 
-            if (yellowEdges) {
-                for (let edge of yellowEdges) {
-                    this.drawDirectedEdge(edge, colors.yellowE, ctx);
-                }
-            }
+    //         if (yellowEdges) {
+    //             for (let edge of yellowEdges) {
+    //                 this.drawDirectedEdge(edge, colors.yellowE, ctx);
+    //             }
+    //         }
 
-            if (greenEdges) {
-                for (let edge of greenEdges) {
-                    this.drawDirectedEdge(edge, colors.greenE, ctx);
-                }
-            }
+    //         if (greenEdges) {
+    //             for (let edge of greenEdges) {
+    //                 this.drawDirectedEdge(edge, colors.greenE, ctx);
+    //             }
+    //         }
             
-        } else {
-            if (redEdges) {
-                for (let edge of redEdges) {
-                    this.drawUndirectedEdge(edge, colors.redE, ctx);
-                }
-            }
+    //     } else {
+    //         if (redEdges) {
+    //             for (let edge of redEdges) {
+    //                 this.drawUndirectedEdge(edge, colors.redE, ctx);
+    //             }
+    //         }
 
-            if (yellowEdges) {
-                for (let edge of yellowEdges) {
-                    this.drawUndirectedEdge(edge, colors.yellowE, ctx);
-                }
-            }
+    //         if (yellowEdges) {
+    //             for (let edge of yellowEdges) {
+    //                 this.drawUndirectedEdge(edge, colors.yellowE, ctx);
+    //             }
+    //         }
 
-            if (greenEdges) {
-                for (let edge of greenEdges) {
-                    this.drawUndirectedEdge(edge, colors.greenE, ctx);
-                }
-            }
-        }
+    //         if (greenEdges) {
+    //             for (let edge of greenEdges) {
+    //                 this.drawUndirectedEdge(edge, colors.greenE, ctx);
+    //             }
+    //         }
+    //     }
 
-        if (redVertices) {
-            for (let vertex of redVertices) {
-                this.drawVertex(vertex, colors.redV, ctx);
-            }
-        }
+    //     if (redVertices) {
+    //         for (let vertex of redVertices) {
+    //             this.drawVertex(vertex, colors.redV, ctx);
+    //         }
+    //     }
 
-        if (yellowVertices) {
-            for (let vertex of yellowVertices) {
-                this.drawVertex(vertex, colors.yellowV, ctx);
-            }
-        }
+    //     if (yellowVertices) {
+    //         for (let vertex of yellowVertices) {
+    //             this.drawVertex(vertex, colors.yellowV, ctx);
+    //         }
+    //     }
 
-        if (greenVertices) {
-            for (let vertex of greenVertices) {
-                this.drawVertex(vertex, colors.greenV, ctx);
-            }
-        }
+    //     if (greenVertices) {
+    //         for (let vertex of greenVertices) {
+    //             this.drawVertex(vertex, colors.greenV, ctx);
+    //         }
+    //     }
         
-        if (outlineVertices) {
-            for (let vertex of outlineVertices) {
-                let v = vertex.getPosition();
-                this.drawCircle(
-                    v[0] * gridSize, 
-                    v[1] * gridSize,
-                    Canvas.VERTEX_RADIUS + 2, 
-                    colors.outV,
-                    false,
-                    ctx,
-                    3
-                );
-            }
-        }
-        
-    }
+    //     if (outlineVertices) {
+    //         for (let vertex of outlineVertices) {
+    //             let v = vertex.getPosition();
+    //             this.drawCircle(
+    //                 v[0] * gridSize, 
+    //                 v[1] * gridSize,
+    //                 Canvas.VERTEX_RADIUS + 2, 
+    //                 colors.outV,
+    //                 false,
+    //                 ctx,
+    //                 3
+    //             );
+    //         }
+    //     }
+    // }
 }
 
 export default Canvas;
 
 // Notes:
 /* 
-
-Abstract canvas array, separate logic and drawing between two components > done
-Use setState to trigger rerenders > done
-Prevent the canvas element itself from rerendering. > done
 Using offsetX and offsetY breaks when zooming in with trackpad. (Standard browser zooming works)
 
 */

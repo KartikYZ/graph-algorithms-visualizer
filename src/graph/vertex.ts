@@ -4,7 +4,7 @@ export default class Vertex<T> {
     private data: T | undefined;
     private color: string; 
 
-    constructor(position: [number, number], color: string = 'rgb(255, 255, 255, 0.8)', data?: T) {
+    constructor(position: [number, number], color: string, data?: T) {
         this.position = position;
         this.data = data;
         this.color = color;
@@ -25,6 +25,14 @@ export default class Vertex<T> {
 
     getData(): T | undefined {
         return this.data;
+    }
+
+    getColor(): string {
+        return this.color;
+    }
+
+    setColor(color: string): void {
+        this.color = color;
     }
     
     toString(): string {

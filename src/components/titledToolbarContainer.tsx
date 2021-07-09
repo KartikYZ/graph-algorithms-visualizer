@@ -12,7 +12,7 @@ class TitledToolbarContainer extends React.Component<Props, State> {
 
     render() {
         let styles = {
-            // backgroundColor: '#aaaaaa',
+            backgroundColor: '#333333',
             border: '1px solid black',
             borderRadius: '8px',
             padding: '10px',
