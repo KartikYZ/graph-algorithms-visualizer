@@ -236,8 +236,10 @@ export default class Graph<T> {
             }
 
             return edge;
+        } else {
+            e.setColor(color);
+            return e;
         }
-        throw new Error("Edge not in graph.");
     }
 
     setEdgesColor(edges: Edge<T>[], color: string): void {
