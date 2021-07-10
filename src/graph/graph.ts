@@ -3,6 +3,7 @@ import Edge from "./edge";
 import HashSet from "../utils/hashSet";
 import HashMap from "../utils/hashMap";
 import { Equatable } from "../utils/hashable";
+import { colors } from "../utils/colors";
 
 /**
  * Adjacency Map (modified) Implementation of Goodrich, Tamassia, Goldwasser's Graph ADT. (Data Structures and Algorithms in Java)
@@ -84,7 +85,7 @@ export default class Graph<T> {
         if (this.vertexSet.contains(v)) {
             return;
         }
-
+        v.setColor(colors.graphVertex);
         this.vertexSet.add(v);
         this.adjacencyMap.put(v, new IncidenceMap<T>());
     }
@@ -102,12 +103,15 @@ export default class Graph<T> {
             return;
         }
 
+        e.setColor(colors.graphEdge);
         this.edgeSet.add(e);
 
         let u = e.getStart();
         let v = e.getEnd();
 
+        u.setColor(colors.graphVertex);
         this.insertVertex(u);
+        v.setColor(colors.graphVertex);
         this.insertVertex(v);
 
         this.adjacencyMap.get(u).outgoing.put(v, e);
@@ -177,7 +181,7 @@ export default class Graph<T> {
 
     setIsDirected(isDirected: boolean): void {
         
-        if (this.isDirected) {
+        if (this.isDirected && !isDirected) {
             // add reverse edges.
             for (let edge of this.edgeSet.getSet()) {
                 let reverseEdge = new Edge(edge.getEnd(), edge.getStart(), edge.getColor());
@@ -204,6 +208,43 @@ export default class Graph<T> {
         this.showPositions = showPositions;
     }
 
+    setVertexColor(v: Vertex<T>, color: string): Vertex<T> {
+        let vertex = this.vertexSet.get(v);
+        if (vertex) {
+            vertex.setColor(color);
+            return vertex;
+        } else {
+            v.setColor(color)
+            return v;
+        }
+    }
+
+    setVerticesColor(vertices: Vertex<T>[], color: string): void {
+        for (let vertex of vertices) {
+            this.setVertexColor(vertex, color);
+        }
+    }
+
+    setEdgeColor(e: Edge<T>, color: string): Edge<T> {
+        let edge = this.getEdge(e.getStart(), e.getEnd());
+        if (edge) {
+            edge.setColor(color);
+
+            if (!this.isDirected) {
+                let reverseEdge = this.getEdge(e.getStart(), e.getEnd());
+                reverseEdge!.setColor(color);
+            }
+
+            return edge;
+        }
+        throw new Error("Edge not in graph.");
+    }
+
+    setEdgesColor(edges: Edge<T>[], color: string): void {
+        for (let edge of edges) {
+            this.setEdgeColor(edge, color);
+        }
+    }
 }
 
 interface IncidenceMapInterface<T> {

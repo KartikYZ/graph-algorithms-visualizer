@@ -20,6 +20,10 @@ export default class HashSet<E extends Hashable> {
       return this.map.remove(data);
     }
 
+    public get(data: E): E | null {    // get reference contained within set.
+        return this.map.getKey(data);
+    }
+
     public contains(data: E): boolean {
         return this.map.containsKey(data);
     }

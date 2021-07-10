@@ -104,6 +104,23 @@ export default class HashMap<K extends Hashable, V> {
         throw new Error("Key: " + key + " not in map.");
     }
 
+    public getKey(key: K): K | null {  // get reference contained within map.
+        if (key == null) {
+            throw new Error("Key is null.");
+        }
+        let index = this.hashAndCompression(key);
+        let current = this.table[index];
+
+        while (current != null) {
+            if (current.getKey().equals(key)) {
+                return current.getKey();
+            }
+            current = current.getNext();
+        }
+        // throw new Error("Key: " + key + " not in map.");
+        return null;
+    }
+
     public containsKey(key: K): boolean {
         if (key == null) {
             throw new Error("Key is null.");

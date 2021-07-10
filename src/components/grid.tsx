@@ -56,34 +56,41 @@ class Grid extends React.Component<Props, State> {
             return;
         }
 
-        if (this.state.hoveringVertex) {
-            if (this.state.hoveringVertex.equals(this.state.currentVertex)) {
+        let {
+            hoveringVertex,
+            hoveringEdge,
+            currentVertex,
+            graph,
+        } = this.state;
+
+        if (hoveringVertex) {
+            if (hoveringVertex.equals(currentVertex)) {
                 this.setState({
                     currentVertex: null,
                     hoveringEdge: null
                 });
             } else {
-                if (this.state.hoveringEdge) {
-                    if (!this.state.graph.edgeSet.contains(this.state.hoveringEdge)) {
-                        this.state.hoveringEdge.setColor(colors.graphEdge);
-                        this.state.hoveringEdge.getStart().setColor(colors.graphVertex);
-                        this.state.hoveringEdge.getEnd().setColor(colors.graphVertex);
-                        this.state.graph.insertEdge(this.state.hoveringEdge);
+                if (hoveringEdge) {
+                    if (!graph.edgeSet.contains(hoveringEdge)) {
+                        // this.state.hoveringEdge.setColor(colors.graphEdge);
+                        // this.state.hoveringEdge.getStart().setColor(colors.graphVertex);
+                        // this.state.hoveringEdge.getEnd().setColor(colors.graphVertex);
+                        graph.insertEdge(hoveringEdge);
                     } else {
-                        this.state.graph.removeEdge(this.state.hoveringEdge);
+                        graph.removeEdge(hoveringEdge);
                     }
                 }
 
-                let newVertex = new Vertex(this.state.hoveringVertex.getPosition(), colors.currentVertex);
+                // let newVertex = new Vertex(this.state.hoveringVertex.getPosition(), colors.currentVertex);
                 this.setState({
-                    currentVertex: newVertex,
+                    currentVertex: graph.setVertexColor(hoveringVertex, colors.graphVertex),
                     hoveringEdge: null
                 });
             }
 
-            if (!this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
-                let newVertex = new Vertex(this.state.hoveringVertex.getPosition(), colors.graphVertex);
-                this.state.graph.insertVertex(newVertex);
+            if (!graph.vertexSet.contains(hoveringVertex)) {
+                // let newVertex = new Vertex(hoveringVertex.getPosition(), colors.graphVertex);
+                graph.insertVertex(hoveringVertex);
             }
         }
     }
@@ -96,9 +103,14 @@ class Grid extends React.Component<Props, State> {
             return;
         }
 
-        if (this.state.hoveringVertex) {
-            if (this.state.graph.vertexSet.contains(this.state.hoveringVertex)) {
-                this.state.graph.removeVertex(this.state.hoveringVertex);
+        let {
+            hoveringVertex,
+            graph
+        } = this.state;
+
+        if (hoveringVertex) {
+            if (graph.vertexSet.contains(hoveringVertex)) {
+                graph.removeVertex(hoveringVertex);
                 this.setState({
                     currentVertex: null,
                     hoveringEdge: null

@@ -54,7 +54,6 @@ class Toolbar extends React.Component<Props, State> {
     
     render() {
         let styles = {
-            // height: 160, 
             backgroundColor: '#222222',
             // backgroundColor: '#5995da',
             padding: '10px 0',
@@ -95,7 +94,6 @@ class Toolbar extends React.Component<Props, State> {
                             3. To remove a directed edge, draw/retrace the edge from its tail to the arrowhead. <br />
                     </div>
                 </TitledToolbarContainer>
-                
             </div>
         );
     }

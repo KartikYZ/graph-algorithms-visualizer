@@ -87,7 +87,8 @@ class Canvas extends React.Component<Props> {
 
             this.drawGrid(ctx);
 
-            const { 
+            const {
+                gridSize, 
                 hoveringVertex, 
                 hoveringEdge, 
                 currentVertex, 
@@ -97,6 +98,26 @@ class Canvas extends React.Component<Props> {
             let showPositions = graph.getShowPositions();
             let vertices = graph.vertices();
             let edges = graph.edges();
+
+            // color animation frame
+            if (this.props.animationFrame) {
+                this.color(this.props.animationFrame);
+                let { outlineVertices } = this.props.animationFrame;
+                if (outlineVertices) {
+                    for (let vertex of outlineVertices) {
+                        let v = vertex.getPosition();
+                        this.drawCircle(
+                            v[0] * gridSize, 
+                            v[1] * gridSize,
+                            Canvas.VERTEX_RADIUS + 2, 
+                            colors.animBlue,
+                            false,
+                            ctx,
+                            3
+                        );
+                    }
+                }
+            }
 
             // edge set
             if (isDirected) {
@@ -120,11 +141,6 @@ class Canvas extends React.Component<Props> {
                 }
             }
 
-            // animation frame
-            // if (this.props.animationFrame) {
-            //     this.drawFrame(this.props.animationFrame, ctx);
-            // }
-
             // hover vertex
             if (hoveringVertex) {
                 this.drawHoverVertex(hoveringVertex, ctx);
@@ -141,7 +157,6 @@ class Canvas extends React.Component<Props> {
                     //     this.drawVertexPosition(vertex);
                     // }
                 }
-                
             }
 
             // current active vertex
@@ -162,12 +177,18 @@ class Canvas extends React.Component<Props> {
                     this.drawEdgeWeight(edge, true, ctx);
                 }
             }
+
+            // deColor animation frame
+            if (this.props.animationFrame) {
+                this.deColor(this.props.animationFrame);
+            }
         }
     }
 
     render() {
         return (
-            <div className="canvas-container" style={{height: "80vh", backgroundColor: "#444444"}}>
+            // todo: fix height to accommodate for different displays
+            <div className="canvas-container" style={{height: Canvas.HEIGHT + 50, backgroundColor: "#444444"}}>
                 {this.constCanvasElement}
             </div>
         );
@@ -378,6 +399,146 @@ class Canvas extends React.Component<Props> {
         ctx.fillText(weight, -ctx.measureText(weight).width / 2, 6);
         ctx.restore();
     }
+
+    color(frame: GraphAnimationFrame) {
+
+        const { 
+            redVertices, 
+            yellowVertices, 
+            greenVertices, 
+            redEdges, 
+            yellowEdges, 
+            greenEdges } = frame;
+
+        const { graph } = this.props;
+        const isDirected = this.props.graph.getIsDirected();
+
+        if (redEdges) {
+            for (let edge of redEdges) {
+                // edge.setColor(colors.animRed);
+                graph.getEdge(edge.getStart(), edge.getEnd())?.setColor(colors.animRed);
+                if (!isDirected) {
+                    graph.getEdge(edge.getEnd(), edge.getStart())?.setColor(colors.animRed);
+
+                }
+            }
+        }
+
+        if (yellowEdges) {
+            for (let edge of yellowEdges) {
+                // edge.setColor(colors.animYellow);
+                graph.getEdge(edge.getStart(), edge.getEnd())?.setColor(colors.animYellow);
+                if (!isDirected) {
+                    graph.getEdge(edge.getEnd(), edge.getStart())?.setColor(colors.animYellow);
+
+                }
+            }
+        }
+
+        if (greenEdges) {
+            for (let edge of greenEdges) {
+                // edge.setColor(colors.animGreen);
+                graph.getEdge(edge.getStart(), edge.getEnd())?.setColor(colors.animGreen);
+                if (!isDirected) {
+                    graph.getEdge(edge.getEnd(), edge.getStart())?.setColor(colors.animRed);
+
+                }
+            }
+        }
+
+        if (redVertices) {
+            for (let vertex of redVertices) {
+                vertex.setColor(colors.animRed);
+            }
+        }
+
+        if (yellowVertices) {
+            for (let vertex of yellowVertices) {
+                vertex.setColor(colors.animYellow);
+            }
+        }
+
+        if (greenVertices) {
+            for (let vertex of greenVertices) {
+                vertex.setColor(colors.animGreen);
+            }
+        }
+            
+    }
+
+    deColor(frame: GraphAnimationFrame) {
+
+        const { 
+            redVertices, 
+            yellowVertices, 
+            greenVertices, 
+            redEdges, 
+            yellowEdges, 
+            greenEdges } = frame;
+
+        let { graph } = this.props;
+        const isDirected = this.props.graph.getIsDirected();
+
+        if (redEdges) {
+            graph.setEdgesColor(redEdges, colors.animRed);
+            // for (let edge of redEdges) {
+            //     // edge.setColor(colors.graphEdge);
+            //     graph.getEdge(edge.getStart(), edge.getEnd())?.setColor(colors.graphEdge);
+            //     if (!isDirected) {
+            //         graph.getEdge(edge.getEnd(), edge.getStart())?.setColor(colors.graphEdge);
+
+            //     }
+            // }
+        }
+
+        if (yellowEdges) {
+            graph.setEdgesColor(yellowEdges, colors.animYellow);
+            // for (let edge of yellowEdges) {
+            //     // edge.setColor(colors.graphEdge);
+            //     graph.getEdge(edge.getStart(), edge.getEnd())?.setColor(colors.graphEdge);
+            //     if (!isDirected) {
+            //         graph.getEdge(edge.getEnd(), edge.getStart())?.setColor(colors.graphEdge);
+
+            //     }
+            // }
+        }
+
+        if (greenEdges) {
+            graph.setEdgesColor(greenEdges, colors.animGreen);
+            // for (let edge of greenEdges) {
+            //     // edge.setColor(colors.graphEdge);
+            //     graph.getEdge(edge.getStart(), edge.getEnd())?.setColor(colors.graphEdge);
+            //     if (!isDirected) {
+            //         graph.getEdge(edge.getEnd(), edge.getStart())?.setColor(colors.graphEdge);
+
+            //     }
+            // }
+        }
+
+        // todo: encapsulate getEdge logic within Graph class setVertexColor and setVertexEdge
+
+        if (redVertices) {
+            graph.setVerticesColor(redVertices, colors.animRed);
+            // for (let vertex of redVertices) {
+            //     vertex.setColor(colors.graphVertex);
+            // }
+        }
+
+        if (yellowVertices) {
+            graph.setVerticesColor(yellowVertices, colors.animYellow);
+            // for (let vertex of yellowVertices) {
+            //     vertex.setColor(colors.graphVertex);
+            // }
+        }
+
+        if (greenVertices) {
+            graph.setVerticesColor(greenVertices, colors.animGreen);
+            // for (let vertex of greenVertices) {
+            //     vertex.setColor(colors.graphVertex);
+            // }
+        }
+    }
+    
 
     // drawFrame(frame: GraphAnimationFrame, ctx: CanvasRenderingContext2D) {
         
