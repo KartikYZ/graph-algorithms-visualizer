@@ -24,7 +24,8 @@ interface Props {
     startButtonProps: {
         options: string[],
         onStart: () => void,
-        onSelection: (option: string) => void;
+        onSelection: (option: string) => void,
+        onTest: () => void
     }
     graphProps: {
         onSelectDirectedEdges: (selected: boolean) => void,
@@ -81,6 +82,7 @@ class Toolbar extends React.Component<Props, State> {
                 <TitledToolbarContainer title="Animation">
                     <Slider {...this.props.animationSpeedSliderProps} /> 
                     <Button label="Start" onClick={this.props.startButtonProps.onStart}/>
+                    <Button label="Test" onClick={this.props.startButtonProps.onTest}/>
                 </TitledToolbarContainer>
                 <TitledToolbarContainer title="Custom graphs">
                     <div>

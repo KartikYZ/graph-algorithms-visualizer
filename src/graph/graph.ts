@@ -208,45 +208,50 @@ export default class Graph<T> {
         this.showPositions = showPositions;
     }
 
-    setVertexColor(v: Vertex<T>, color: string): Vertex<T> {
-        let vertex = this.vertexSet.get(v);
-        if (vertex) {
-            vertex.setColor(color);
-            return vertex;
-        } else {
-            v.setColor(color)
-            return v;
-        }
-    }
+    // setVertexColor(v: Vertex<T>, color: string): Vertex<T> {
+    //     let vertex = this.vertexSet.get(v);
+    //     if (vertex) {
+    //         vertex.setColor(color);
+    //         return vertex;
+    //     } else {
+    //         v.setColor(color)
+    //         return v;
+    //     }
+    // }
 
-    setVerticesColor(vertices: Vertex<T>[], color: string): void {
-        for (let vertex of vertices) {
-            this.setVertexColor(vertex, color);
-        }
-    }
+    // setVerticesColor(vertices: Vertex<T>[], color: string): void {
+    //     for (let vertex of vertices) {
+    //         this.setVertexColor(vertex, color);
+    //     }
+    // }
 
-    setEdgeColor(e: Edge<T>, color: string): Edge<T> {
-        let edge = this.getEdge(e.getStart(), e.getEnd());
-        if (edge) {
-            edge.setColor(color);
+    // setEdgeColor(e: Edge<T>, color: string): Edge<T> {
+    //     let edge = this.getEdge(e.getStart(), e.getEnd());
+    //     if (edge) {
+    //         edge.setColor(color);
 
-            if (!this.isDirected) {
-                let reverseEdge = this.getEdge(e.getStart(), e.getEnd());
-                reverseEdge!.setColor(color);
-            }
+    //         if (!this.isDirected) {
+    //             let reverseEdge = this.getEdge(e.getStart(), e.getEnd());
+    //             reverseEdge!.setColor(color);
+    //         }
 
-            return edge;
-        } else {
-            e.setColor(color);
-            return e;
-        }
-    }
+    //         return edge;
+    //     } else {
+    //         e.setColor(color);
+    //         if (!this.isDirected) {
+    //             let reverseEdge = new Edge(e.getStart(), e.getEnd(), color);
+    //             this.insertEdge(reverseEdge);
+    //             reverseEdge.setColor(color);
+    //         }
+    //         return e;
+    //     }
+    // }
 
-    setEdgesColor(edges: Edge<T>[], color: string): void {
-        for (let edge of edges) {
-            this.setEdgeColor(edge, color);
-        }
-    }
+    // setEdgesColor(edges: Edge<T>[], color: string): void {
+    //     for (let edge of edges) {
+    //         this.setEdgeColor(edge, color);
+    //     }
+    // }
 }
 
 interface IncidenceMapInterface<T> {

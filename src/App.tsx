@@ -29,8 +29,9 @@ interface IDAlgorithmMap {
 
 class App extends React.Component<Props, State> {
 
-  // private gridSizeValues: number[] = [100, 80, 40, 32, 25, 20, 16];
-    private gridSizeValues: number[] = [100, 80, 40];
+    // private gridSizeValues: number[] = [100, 80, 40, 32, 25, 20, 16];
+    // private gridSizeValues: number[] = [100, 80, 40];
+    private gridSizeValues: number[] = [100, 80];
     private animationSpeeds: number[] = [2000, 1000, 500, 400, 200, 100, 50, 20];
     private algorithms: IDAlgorithmMap;
 
@@ -47,6 +48,9 @@ class App extends React.Component<Props, State> {
         this.onSelection = this.onSelection.bind(this);
         this.onAnimationSpeedChange = this.onAnimationSpeedChange.bind(this);
         this.onStart = this.onStart.bind(this);
+
+        // testing
+        this.onTest = this.onTest.bind(this);
 
         this.algorithms = {
             'dfs': recursiveDepthFirstSearch,
@@ -166,6 +170,16 @@ class App extends React.Component<Props, State> {
         let frames = this.algorithms[this.state.algorithm](this.state.graph, this.state.graph.vertices()[0]).getFrames();
 
         for (let i = 0; i < frames.length; i++) {
+            if (i === frames.length - 1) {
+                let lastFrame = frames[i];
+                if (lastFrame.redVertices) {
+                    for (let vertex of lastFrame.redVertices) {
+                        if (!this.state.graph.vertices().includes(vertex)) {
+                            console.log(vertex.toString());
+                        }
+                    }
+                }
+            }
             setTimeout(() => {
                 this.setState({
                     animationFrame: frames[i]
@@ -174,7 +188,41 @@ class App extends React.Component<Props, State> {
         }
 
         // use requestAnimationFrame or recursive setTimout.
-        setTimeout(() => {this.setState({isAnimating: false, animationFrame: null})}, ((frames.length + 1) * intervalDelay) + 3000);
+        // setTimeout(() => {this.setState({isAnimating: false, animationFrame: null})}, ((frames.length + 1) * intervalDelay) + 3000);
+        setTimeout(() => {this.setState({isAnimating: false, animationFrame: frames[frames.length - 1]})}, ((frames.length + 1) * intervalDelay) + 3000);
+    }
+
+    onTest() {
+        console.log('testing.');
+        this.test2();
+        console.log('end of test.')
+    }
+
+    test1() {
+        let vertices = this.state.graph.vertices();
+        let edges = this.state.graph.edges();
+
+        console.log(vertices);
+        console.log(edges);
+
+        for (let vertex of vertices) {
+            vertex.setColor(colors.animBlue);
+        }
+
+        for (let edge of edges) {
+            edge.setColor(colors.animBlue);
+        }
+        this.setState({});
+    }
+
+    test2() {
+        let vertices = this.state.graph.vertices();
+
+        for (let v of vertices) {
+            if (!this.state.graph.vertexSet.getSet().includes(v)) {
+                console.log(v);
+            }
+        }
     }
 
     render() {
@@ -196,7 +244,8 @@ class App extends React.Component<Props, State> {
                     startButtonProps={{
                         options: Object.keys(this.algorithms),
                         onStart: this.onStart,
-                        onSelection: this.onSelection
+                        onSelection: this.onSelection,
+                        onTest: this.onTest
                     }}
                     graphProps={{
                         onSelectDirectedEdges: this.onDirected,

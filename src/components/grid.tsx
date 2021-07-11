@@ -81,9 +81,9 @@ class Grid extends React.Component<Props, State> {
                     }
                 }
 
-                // let newVertex = new Vertex(this.state.hoveringVertex.getPosition(), colors.currentVertex);
+                let newVertex = new Vertex(hoveringVertex.getPosition(), colors.currentVertex);
                 this.setState({
-                    currentVertex: graph.setVertexColor(hoveringVertex, colors.graphVertex),
+                    currentVertex: newVertex,
                     hoveringEdge: null
                 });
             }
