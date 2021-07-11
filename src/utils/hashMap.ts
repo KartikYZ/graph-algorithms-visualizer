@@ -47,6 +47,7 @@ export default class HashMap<K extends Hashable, V> {
         }
         // current != null <-> duplicate entry
         let oldValue: V = current.getValue();
+        // current.setKey(key);    // replace key reference;
         current.setValue(value);
         return oldValue;
     }

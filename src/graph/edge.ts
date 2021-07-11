@@ -35,8 +35,16 @@ export default class Edge<T> {
         return this.start;
     }
 
+    setStart(start: Vertex<T>): void {
+        this.start = start;
+    }
+
     getEnd(): Vertex<T> {
         return this.end;
+    }
+
+    setEnd(end: Vertex<T>): void {
+        this.end = end;
     }
 
     getWeight(): number {

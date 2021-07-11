@@ -88,7 +88,7 @@ class Canvas extends React.Component<Props> {
             this.drawGrid(ctx);
 
             const {
-                gridSize, 
+                // gridSize, 
                 hoveringVertex, 
                 hoveringEdge, 
                 currentVertex, 
@@ -179,7 +179,7 @@ class Canvas extends React.Component<Props> {
             // weights 
             if (this.props.graph.getShowWeights()) {
                 for (let edge of edges) {
-                    this.drawEdgeWeight(edge, true, ctx);
+                    this.drawEdgeWeight(edge, false, ctx);
                 }
             }
 
@@ -379,7 +379,7 @@ class Canvas extends React.Component<Props> {
         ctx.restore();
     }
 
-    drawEdgeWeight(e: Edge<any>, round: boolean = false, ctx: CanvasRenderingContext2D) {
+    drawEdgeWeight(e: Edge<any>, round: boolean, ctx: CanvasRenderingContext2D) {
 
         let v1 = e.start.getPosition();
         let v2 = e.end.getPosition();
@@ -409,81 +409,6 @@ class Canvas extends React.Component<Props> {
         ctx.restore();
     }
 
-    color(frame: GraphAnimationFrame) {
-
-        // const { 
-        //     redVertices, 
-        //     yellowVertices, 
-        //     greenVertices, 
-        //     redEdges, 
-        //     yellowEdges, 
-        //     greenEdges } = frame;
-
-        // const { graph } = this.props;
-
-        // if (redEdges) {
-        //     this.colorEdges(redEdges, colors.animRed);
-        // }
-
-        // if (yellowEdges) {
-        //     this.colorEdges(yellowEdges, colors.animYellow);
-        // }
-
-        // if (greenEdges) {
-        //     this.colorEdges(greenEdges, colors.animGreen);
-        // }
-
-        // if (redVertices) {
-        //     this.colorVertices(redVertices, colors.animRed);
-        // }
-
-        // if (yellowVertices) {
-        //     this.colorVertices(yellowVertices, colors.animYellow);
-        // }
-
-        // if (greenVertices) {
-        //     this.colorVertices(greenVertices, colors.animGreen);
-        // }
-            
-    }
-
-    deColor(frame: GraphAnimationFrame) {
-
-        // const { 
-        //     redVertices, 
-        //     yellowVertices, 
-        //     greenVertices, 
-        //     redEdges, 
-        //     yellowEdges, 
-        //     greenEdges } = frame;
-
-        // let { graph } = this.props;
-
-        // if (redEdges) {
-        //     this.colorEdges(redEdges, colors.graphEdge);
-        // }
-
-        // if (yellowEdges) {
-        //     this.colorEdges(yellowEdges, colors.graphEdge);
-        // }
-
-        // if (greenEdges) {
-        //     this.colorEdges(greenEdges, colors.graphEdge);
-        // }
-
-        // if (redVertices) {
-        //     this.colorVertices(redVertices, colors.graphVertex);
-        // }
-
-        // if (yellowVertices) {
-        //     this.colorVertices(yellowVertices, colors.graphVertex);
-        // }
-
-        // if (greenVertices) {
-        //     this.colorVertices(greenVertices, colors.graphVertex);
-        // }
-    }
-
     colorEdges(edges: Edge<any>[], color: string) {
         for (let edge of edges) {
             edge.setColor(color);
@@ -492,7 +417,7 @@ class Canvas extends React.Component<Props> {
         if (!this.props.graph.getIsDirected()) {
             for (let edge of edges) {
                 let reverseEdge = this.props.graph.getEdge(edge.getEnd(), edge.getStart());
-                reverseEdge?.setColor(color);
+                reverseEdge!.setColor(color);
             }
         }
     }
@@ -581,5 +506,5 @@ export default Canvas;
 // Notes:
 /* 
 Using offsetX and offsetY breaks when zooming in with trackpad. (Standard browser zooming works)
-
+Disable toolbar UI during animations
 */

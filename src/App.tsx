@@ -68,7 +68,7 @@ class App extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        this.onTest();
+        // this.onTest();
     }
 
     onDirected(directedEdges: boolean) {
@@ -129,7 +129,6 @@ class App extends React.Component<Props, State> {
 
         for (let y = 1; y < vdivs; y++) {
             for (let x = 1; x < hdivs; x++) {
-                // this.state.graph.insertVertex(new Vertex([x, y]));
                 let s = new Vertex([x, y], colors.graphVertex);
                 let r = new Vertex([x + 1, y], colors.graphVertex);
                 let d = new Vertex([x, y + 1], colors.graphVertex);
@@ -174,16 +173,16 @@ class App extends React.Component<Props, State> {
         let frames = this.algorithms[this.state.algorithm](this.state.graph, this.state.graph.vertices()[0]).getFrames();
 
         for (let i = 0; i < frames.length; i++) {
-            if (i === frames.length - 1) {
-                let lastFrame = frames[i];
-                if (lastFrame.redVertices) {
-                    for (let vertex of lastFrame.redVertices) {
-                        if (!this.state.graph.vertices().includes(vertex)) {
-                            console.log(vertex.toString());
-                        }
-                    }
-                }
-            }
+            // if (i === frames.length - 1) {
+            //     let lastFrame = frames[i];
+            //     if (lastFrame.redVertices) {
+            //         for (let vertex of lastFrame.redVertices) {
+            //             if (!this.state.graph.vertices().includes(vertex)) {
+            //                 console.log(vertex.toString());
+            //             }
+            //         }
+            //     }
+            // }
             setTimeout(() => {
                 this.setState({
                     animationFrame: frames[i]
@@ -192,8 +191,8 @@ class App extends React.Component<Props, State> {
         }
 
         // use requestAnimationFrame or recursive setTimout.
-        // setTimeout(() => {this.setState({isAnimating: false, animationFrame: null})}, ((frames.length + 1) * intervalDelay) + 3000);
-        setTimeout(() => {this.setState({isAnimating: false, animationFrame: frames[frames.length - 1]})}, ((frames.length + 1) * intervalDelay) + 3000);
+        setTimeout(() => {this.setState({isAnimating: false, animationFrame: null})}, ((frames.length + 1) * intervalDelay) + 3000);
+        // setTimeout(() => {this.setState({isAnimating: false, animationFrame: frames[frames.length - 1]})}, ((frames.length + 1) * intervalDelay) + 3000);
     }
 
     onTest() {

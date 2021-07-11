@@ -85,6 +85,7 @@ export default class Graph<T> {
         if (this.vertexSet.contains(v)) {
             return;
         }
+        
         v.setColor(colors.graphVertex);
         this.vertexSet.add(v);
         this.adjacencyMap.put(v, new IncidenceMap<T>());
@@ -103,16 +104,28 @@ export default class Graph<T> {
             return;
         }
 
-        e.setColor(colors.graphEdge);
-        this.edgeSet.add(e);
+        let a = e.getStart();
+        let b = e.getEnd();
+
+        if (this.vertexSet.contains(a)) {
+            e.setStart(this.vertexSet.get(a)!);
+        } else {
+            a.setColor(colors.graphVertex);
+            this.insertVertex(a);
+        }
+
+        if (this.vertexSet.contains(b)) {
+            e.setEnd(this.vertexSet.get(b)!);
+        } else {
+            b.setColor(colors.graphVertex);
+            this.insertVertex(b);
+        }
 
         let u = e.getStart();
         let v = e.getEnd();
 
-        u.setColor(colors.graphVertex);
-        this.insertVertex(u);
-        v.setColor(colors.graphVertex);
-        this.insertVertex(v);
+        e.setColor(colors.graphEdge);
+        this.edgeSet.add(e);
 
         this.adjacencyMap.get(u).outgoing.put(v, e);
         this.adjacencyMap.get(v).incoming.put(u, e);
@@ -207,51 +220,6 @@ export default class Graph<T> {
     setShowPositions(showPositions: boolean): void {
         this.showPositions = showPositions;
     }
-
-    // setVertexColor(v: Vertex<T>, color: string): Vertex<T> {
-    //     let vertex = this.vertexSet.get(v);
-    //     if (vertex) {
-    //         vertex.setColor(color);
-    //         return vertex;
-    //     } else {
-    //         v.setColor(color)
-    //         return v;
-    //     }
-    // }
-
-    // setVerticesColor(vertices: Vertex<T>[], color: string): void {
-    //     for (let vertex of vertices) {
-    //         this.setVertexColor(vertex, color);
-    //     }
-    // }
-
-    // setEdgeColor(e: Edge<T>, color: string): Edge<T> {
-    //     let edge = this.getEdge(e.getStart(), e.getEnd());
-    //     if (edge) {
-    //         edge.setColor(color);
-
-    //         if (!this.isDirected) {
-    //             let reverseEdge = this.getEdge(e.getStart(), e.getEnd());
-    //             reverseEdge!.setColor(color);
-    //         }
-
-    //         return edge;
-    //     } else {
-    //         e.setColor(color);
-    //         if (!this.isDirected) {
-    //             let reverseEdge = new Edge(e.getStart(), e.getEnd(), color);
-    //             this.insertEdge(reverseEdge);
-    //             reverseEdge.setColor(color);
-    //         }
-    //         return e;
-    //     }
-    // }
-
-    // setEdgesColor(edges: Edge<T>[], color: string): void {
-    //     for (let edge of edges) {
-    //         this.setEdgeColor(edge, color);
-    //     }
-    // }
 }
 
 interface IncidenceMapInterface<T> {

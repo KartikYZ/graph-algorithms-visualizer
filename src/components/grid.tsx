@@ -72,9 +72,6 @@ class Grid extends React.Component<Props, State> {
             } else {
                 if (hoveringEdge) {
                     if (!graph.edgeSet.contains(hoveringEdge)) {
-                        // this.state.hoveringEdge.setColor(colors.graphEdge);
-                        // this.state.hoveringEdge.getStart().setColor(colors.graphVertex);
-                        // this.state.hoveringEdge.getEnd().setColor(colors.graphVertex);
                         graph.insertEdge(hoveringEdge);
                     } else {
                         graph.removeEdge(hoveringEdge);
@@ -89,7 +86,6 @@ class Grid extends React.Component<Props, State> {
             }
 
             if (!graph.vertexSet.contains(hoveringVertex)) {
-                // let newVertex = new Vertex(hoveringVertex.getPosition(), colors.graphVertex);
                 graph.insertVertex(hoveringVertex);
             }
         }
