@@ -342,7 +342,7 @@ class Canvas extends React.Component<Props> {
     //     this.drawDirectedEdge(e, ctx);
     // }
 
-    drawEdgeArrow(e: Edge<any>, ctx: CanvasRenderingContext2D) {
+    drawEdgeArrow(e: Edge<any>, ctx: CanvasRenderingContext2D) {    // consider: make sprite sheet of all possible rotations to reduce draw cost.
         let v1 = e.start.getPosition();
         let v2 = e.end.getPosition();
 
