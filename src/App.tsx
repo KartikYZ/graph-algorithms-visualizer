@@ -67,6 +67,10 @@ class App extends React.Component<Props, State> {
         }    
     }
 
+    componentDidMount() {
+        this.onTest();
+    }
+
     onDirected(directedEdges: boolean) {
         this.state.graph.setIsDirected(directedEdges);
         this.setState({});
@@ -194,7 +198,8 @@ class App extends React.Component<Props, State> {
 
     onTest() {
         console.log('testing.');
-        this.test2();
+        // this.test1();
+        // this.test2();
         console.log('end of test.')
     }
 
@@ -216,13 +221,33 @@ class App extends React.Component<Props, State> {
     }
 
     test2() {
+        this.onGenerateGrid();
         let vertices = this.state.graph.vertices();
+        let map = this.state.graph.getAdjacencyMap();
+
+        let i = 0;
+        let o = 0;
 
         for (let v of vertices) {
-            if (!this.state.graph.vertexSet.getSet().includes(v)) {
-                console.log(v);
+            let iMap = map.get(v);
+            for (let u of iMap.incoming.keySet()) {
+                if (vertices.includes(u)) {
+                    console.log(u.toString());
+                    i++;
+                }
+            }
+
+            for (let u of iMap.outgoing.keySet()) {
+                if (vertices.includes(u)) {
+                    console.log(u.toString());
+                    o++;
+                }
             }
         }
+
+        console.log(i)
+        console.log(o)
+        console.log(vertices.length);
     }
 
     render() {
@@ -244,8 +269,7 @@ class App extends React.Component<Props, State> {
                     startButtonProps={{
                         options: Object.keys(this.algorithms),
                         onStart: this.onStart,
-                        onSelection: this.onSelection,
-                        onTest: this.onTest
+                        onSelection: this.onSelection
                     }}
                     graphProps={{
                         onSelectDirectedEdges: this.onDirected,
