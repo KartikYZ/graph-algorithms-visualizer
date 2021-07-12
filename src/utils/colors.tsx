@@ -12,7 +12,7 @@ export const rgba = {
     green1: 'rgba(98, 217, 131, 1)',
     green2: 'rgba(98, 217, 131, 0.5)',
     yellow: 'rgba(255, 255, 0, 0.9)',
-    orange: 'rgba()',
+    orange: 'rgba(255, 165, 0, 1)',
     purple: 'rgba()',
     grey: 'rgba(190, 190, 190, 1)',
     tsprt_grey: 'rgba(190, 190, 190, 0.8)'
@@ -34,6 +34,7 @@ export const colors = {
     animBlue: rgba.blue1,
     animGreen: rgba.green1,
     animYellow: rgba.yellow,
+    animOrange: rgba.orange
 }
 
 // const grid_shade = 190;

@@ -100,28 +100,26 @@ class Canvas extends React.Component<Props> {
             let vertices = graph.vertices();
             let edges = graph.edges();
 
-            // // color animation frame
-            // if (this.props.animationFrame) {
-            //     this.color(this.props.animationFrame);
-            //     let { outlineVertices } = this.props.animationFrame;
-            //     if (outlineVertices) {
-            //         for (let vertex of outlineVertices) {
-            //             let v = vertex.getPosition();
-            //             this.drawCircle(
-            //                 v[0] * gridSize, 
-            //                 v[1] * gridSize,
-            //                 Canvas.VERTEX_RADIUS + 2, 
-            //                 colors.animBlue,
-            //                 false,
-            //                 ctx,
-            //                 3
-            //             );
-            //         }
-            //     }
-            // }
+            let t1 = performance.now();
 
             if (animationFrame) {
                 this.colorFrame(animationFrame);
+
+                // let { outlineVertices } = animationFrame;
+                // if (outlineVertices) {
+                //     for (let vertex of outlineVertices) {
+                //         let v = vertex.getPosition();
+                //         this.drawCircle(
+                //             v[0] * gridSize, 
+                //             v[1] * gridSize,
+                //             Canvas.VERTEX_RADIUS + 2, 
+                //             colors.animBlue,
+                //             false,
+                //             ctx,
+                //             3
+                //         );
+                //     }
+                // }
             }
 
             // edge set
@@ -134,14 +132,15 @@ class Canvas extends React.Component<Props> {
                     this.drawUndirectedEdge(edge, ctx);
                 }
             }     
+
+            // let t2 = performance.now();
+            // console.log(Math.round(t2 - t1));
             
             // hover edge
             if (hoveringEdge) {
                 if (isDirected) {
-                    // this.drawDirectedHoverEdge(hoveringEdge, ctx);
                     this.drawDirectedEdge(hoveringEdge, ctx);
                 } else {
-                    // this.drawUndirectedHoverEdge(hoveringEdge, ctx);
                     this.drawUndirectedEdge(hoveringEdge, ctx);
                 }
             }
@@ -187,10 +186,8 @@ class Canvas extends React.Component<Props> {
                 this.unColorFrame(animationFrame);
             }
 
-            // // deColor animation frame
-            // if (this.props.animationFrame) {
-            //     this.deColor(this.props.animationFrame);
-            // }
+            let t2 = performance.now();
+            console.log(Math.round(t2 - t1));
         }
     }
 
@@ -287,7 +284,7 @@ class Canvas extends React.Component<Props> {
         this.drawVertex(v, ctx);
     }
 
-    drawVertexPosition(v: Vertex<any>, ctx: CanvasRenderingContext2D) {
+    drawVertexPosition(v: Vertex<any>, ctx: CanvasRenderingContext2D, box: boolean = false) {
         let pos = v.getPosition();
         let { gridSize } = this.props;
         let x = pos[0] * gridSize;
@@ -297,10 +294,12 @@ class Canvas extends React.Component<Props> {
 
         ctx.translate(x, y);
 
-        // ctx.strokeStyle = 'black';
-        // ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        // ctx.strokeRect(-30, -30, 20, 20);
-        // ctx.fillRect(-30, -30, 20, 20);
+        if (box) {
+            ctx.strokeStyle = 'black';
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+            ctx.strokeRect(-50, -26, 40, 24);
+            ctx.fillRect(-50, -26, 42, 24);
+        }
 
         // text   (todo: extract draw text method)
         let strPos = `(${pos[0]}, ${pos[1]})`;
@@ -328,19 +327,10 @@ class Canvas extends React.Component<Props> {
         ctx.restore();
     }
 
-    // drawUndirectedHoverEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {
-    //     // let c = 'rgba(255, 255, 255, 0.3)';
-    //     this.drawUndirectedEdge(e, ctx);
-    // }
-
     drawDirectedEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {
         this.drawUndirectedEdge(e, ctx);
         this.drawEdgeArrow(e, ctx);
     }
-
-    // drawDirectedHoverEdge(e: Edge<any>, ctx: CanvasRenderingContext2D): void {     // rectify alpha channel later.
-    //     this.drawDirectedEdge(e, ctx);
-    // }
 
     drawEdgeArrow(e: Edge<any>, ctx: CanvasRenderingContext2D) {    // consider: make sprite sheet of all possible rotations to reduce draw cost.
         let v1 = e.start.getPosition();
@@ -351,12 +341,6 @@ class Canvas extends React.Component<Props> {
         let mag = 10;
         
         ctx.save();
-        
-        // if (color) {
-        //     ctx.strokeStyle = ctx.fillStyle = color;
-        // } else {
-        //     ctx.strokeStyle = ctx.fillStyle = Canvas.COLORS.current_node_color;
-        // }
 
         ctx.strokeStyle = ctx.fillStyle = e.getColor();
 
@@ -430,6 +414,7 @@ class Canvas extends React.Component<Props> {
     
     colorFrame(frame: GraphAnimationFrame) {
         const { 
+            outlineVertices,
             redVertices, 
             yellowVertices, 
             greenVertices, 
@@ -462,10 +447,15 @@ class Canvas extends React.Component<Props> {
         if (greenVertices) {
             this.colorVertices(greenVertices, colors.animGreen);
         }
+
+        if (outlineVertices) {
+            this.colorVertices(outlineVertices, colors.animOrange);
+        }
     }
     
     unColorFrame(frame: GraphAnimationFrame) {
         const { 
+            outlineVertices,
             redVertices, 
             yellowVertices, 
             greenVertices, 
@@ -497,6 +487,10 @@ class Canvas extends React.Component<Props> {
 
         if (greenVertices) {
             this.colorVertices(greenVertices, colors.graphVertex);
+        }
+
+        if (outlineVertices) {
+            this.colorVertices(outlineVertices, colors.graphVertex);
         }
     }
 }
