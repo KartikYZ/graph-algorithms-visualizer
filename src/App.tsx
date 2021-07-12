@@ -72,6 +72,9 @@ class App extends React.Component<Props, State> {
     }
 
     onDirected(directedEdges: boolean) {
+        if (this.state.isAnimating) {
+            return;
+        }
         this.state.graph.setIsDirected(directedEdges);
         this.setState({});
     }
@@ -87,10 +90,19 @@ class App extends React.Component<Props, State> {
     }
 
     onGridSizeChange(sliderValue: number) {
+        if (this.state.isAnimating) {
+            return;
+        } else if (this.state.gridSize > sliderValue) {
+            this.state.graph.clear();
+        }
         this.setState({gridSize: sliderValue});
     }
 
     onGenerateRandom() {
+        if (this.state.isAnimating) {
+            return;
+        }
+
         let gridSize = this.gridSizeValues[this.state.gridSize];    // todo: state holds gridSize rather than index
         let hdivs: number = 1600 / gridSize;
         let vdivs: number = 800 / gridSize;
@@ -121,6 +133,10 @@ class App extends React.Component<Props, State> {
     }
 
     onGenerateGrid() {
+        if (this.state.isAnimating) {
+            return;
+        }
+
         let gridSize = this.gridSizeValues[this.state.gridSize];
         let hdivs: number = 1600 / gridSize;
         let vdivs: number = 800 / gridSize;
@@ -148,6 +164,10 @@ class App extends React.Component<Props, State> {
     }
 
     onClear() {
+        if (this.state.isAnimating) {
+            return;
+        }
+
         this.state.graph.clear();
         this.setState({});
     }
@@ -161,6 +181,9 @@ class App extends React.Component<Props, State> {
     }
 
     onStart() {
+        if (this.state.isAnimating) {
+            return;
+        }
 
         let intervalDelay = this.animationSpeeds[this.state.animationSpeed];
 
