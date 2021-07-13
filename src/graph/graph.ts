@@ -1,8 +1,8 @@
 import Vertex from "./vertex";
 import Edge from "./edge";
-import HashSet from "../utils/hashSet";
-import HashMap from "../utils/hashMap";
-import { Equatable } from "../utils/hashable";
+import HashSet from "../data_structures/hashSet";
+import HashMap from "../data_structures/hashMap";
+import { Equatable } from "../utils/interfaces";
 import { colors } from "../utils/colors";
 
 /**

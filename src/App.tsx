@@ -1,12 +1,23 @@
 import React from 'react';
 import './App.css';
 
+// Components
 import Toolbar from './components/toolbar';
 import Grid from './components/grid';
+
+// Graph ADT
 import Graph from './graph/graph';
-import { recursiveDepthFirstSearch, breadthFirstSearch, AnimationBuilder, GraphAnimationFrame } from './graph/algorithms';
 import Vertex from './graph/vertex';
 import Edge from './graph/edge';
+
+// Algorithms
+import depthFirstSearch from './algorithms/depthFirstSearch';
+import breadthFirstSearch from './algorithms/breadthFirstSearch';
+
+// Animations
+import { GraphAnimationFrame, AnimationBuilder } from './animationBuilder';
+
+// utils
 import { getRandomBoolean, getRandomInt } from './utils/mathFunctions';
 import { colors } from './utils/colors';
 
@@ -53,7 +64,7 @@ class App extends React.Component<Props, State> {
         this.onTest = this.onTest.bind(this);
 
         this.algorithms = {
-            'dfs': recursiveDepthFirstSearch,
+            'dfs': depthFirstSearch,
             'bfs': breadthFirstSearch
         }
 

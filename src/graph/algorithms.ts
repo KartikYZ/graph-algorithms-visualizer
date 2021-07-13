@@ -1,10 +1,10 @@
-import HashSet from "../utils/hashSet";
+import HashSet from "../data_structures/hashSet";
 // import Stack from "../utils/stack";
-import Queue from "../utils/queue";
+import Queue from "../data_structures/queue";
 import Graph from "./graph";
 import Vertex from "./vertex";
 import Edge from "./edge";
-import HashMap from "../utils/hashMap";
+import HashMap from "../data_structures/hashMap";
 
 export function breadthFirstSearch(graph: Graph<any>, startVertex: Vertex<any>): AnimationBuilder {
 

@@ -1,4 +1,4 @@
-import { Hashable } from './hashable'
+import { Hashable } from '../utils/interfaces'
 import HashMap from './hashMap';
 
 /**
