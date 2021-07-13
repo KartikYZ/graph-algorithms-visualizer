@@ -1,4 +1,4 @@
-import { Hashable } from "./hashable";
+import { Hashable } from "../utils/interfaces";
 
 // TODO: See deductions and rectify!
 
